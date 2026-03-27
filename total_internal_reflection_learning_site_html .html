@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>光的全反射 - 互动学习实验室</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans SC', sans-serif; }
+        .neon-glow { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.3); }
+        @keyframes pulse-ray {
+            0%, 100% { opacity: 0.8; stroke-width: 2; }
+            50% { opacity: 1; stroke-width: 3; }
+        }
+        .ray-animate { animation: pulse-ray 2s ease-in-out infinite; }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+            margin-top: -8px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 2px;
+        }
+        .option-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-card:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .option-card.selected {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        .option-card.correct {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            animation: correct-pulse 0.5s ease;
+        }
+        .option-card.wrong {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            animation: shake 0.5s ease;
+        }
+        @keyframes correct-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .star {
+            color: #fbbf24;
+            transition: transform 0.3s ease;
+        }
+        .star.earned {
+            animation: star-pop 0.5s ease;
+        }
+        @keyframes star-pop {
+            0% { transform: scale(0) rotate(0deg); }
+            50% { transform: scale(1.4) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+        .progress-fill {
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #gameCanvas {
+            cursor: crosshair;
+            touch-action: none;
+        }
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: float-up 3s ease-out forwards;
+        }
+        @keyframes float-up {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen overflow-x-hidden">
+
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style="animation-delay: 2s;"></div>
+    </div>
+
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/10">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center text-xl">💡</div>
+                <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">全反射实验室</h1>
+            </div>
+            <div class="flex gap-4 text-sm">
+                <button onclick="showSection('learn', this)" class="nav-btn px-4 py-2 rounded-full bg-blue-600 neon-glow hover:bg-white/10 transition">知识讲解</button>
+                <button onclick="showSection('quiz', this)" class="nav-btn px-4 py-2 rounded-full hover:bg-white/10 transition">互动题目</button>
+                <button onclick="showSection('game', this)" class="nav-btn px-4 py-2 rounded-full hover:bg-white/10 transition">光纤游戏</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-20 pb-10 px-4 max-w-6xl mx-auto relative z-10">
+        <section id="learn-section" class="space-y-8">
+            <div class="text-center py-10">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600">
+                    光的全反射
+                </h2>
+                <p class="text-xl text-slate-300">探索光线在介质界面的神奇行为</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass rounded-2xl p-6 hover:transform hover:scale-105 transition duration-300">
+                    <div class="text-4xl mb-3">🔍</div>
+                    <h3 class="text-lg font-bold text-blue-400 mb-2">什么是全反射？</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        当光从光密介质（如水、玻璃）射向光疏介质（如空气）时，如果入射角大于临界角，光线会全部反射回原介质，不再折射出去。
+                    </p>
+                </div>
+                <div class="glass rounded-2xl p-6 hover:transform hover:scale-105 transition duration-300">
+                    <div class="text-4xl mb-3">📐</div>
+                    <h3 class="text-lg font-bold text-purple-400 mb-2">临界角公式</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        sin C = n₂/n₁ （n₁ > n₂）<br>
+                        其中 C 是临界角，n₁是光密介质折射率，n₂是光疏介质折射率
+                    </p>
+                </div>
+                <div class="glass rounded-2xl p-6 hover:transform hover:scale-105 transition duration-300">
+                    <div class="text-4xl mb-3">💎</div>
+                    <h3 class="text-lg font-bold text-pink-400 mb-2">实际应用</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        光纤通信、钻石闪耀、海市蜃楼、自行车尾灯、内窥镜等都利用了全反射原理！
+                    </p>
+                </div>
+            </div>
+
+            <div class="glass rounded-3xl p-8 mt-8">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-sm">1</span>
+                    互动演示：探索临界角
+                </h3>
+                
+                <div class="grid lg:grid-cols-2 gap-8 items-center">
+                    <div class="relative bg-slate-800 rounded-2xl overflow-hidden border border-slate-700" style="height: 400px;">
+                        <canvas id="demoCanvas" class="w-full h-full"></canvas>
+                        <div class="absolute bottom-4 left-4 right-4 glass rounded-xl p-4">
+                            <div class="flex items-center gap-4">
+                                <span class="text-sm font-medium whitespace-nowrap">入射角：</span>
+                                <input type="range" id="angleSlider" min="0" max="90" value="30" class="flex-1">
+                                <span id="angleDisplay" class="text-blue-400 font-bold w-16 text-right">30°</span>
+                            </div>
+                            <div class="mt-2 flex justify-between text-xs text-slate-400">
+                                <span>0°</span>
+                                <span id="criticalInfo" class="text-yellow-400 font-bold">临界角: 48.8°</span>
+                                <span>90°</span>
+                            </div>
+                        </div>
+                        <div id="statusBadge" class="absolute top-4 right-4 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/50 text-green-400 font-bold text-sm">
+                            正常折射
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-blue-500">
+                            <h4 class="font-bold text-blue-400 mb-2">当前状态</h4>
+                            <p id="explanationText" class="text-slate-300 text-sm leading-relaxed">
+                                光线从水中射入空气，入射角为30°，小于临界角48.8°。此时光线一部分反射回水中，大部分折射进入空气。
+                            </p>
+                        </div>
+                        
+                        <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-purple-500">
+                            <h4 class="font-bold text-purple-400 mb-2">观察要点</h4>
+                            <ul class="text-slate-300 text-sm space-y-2 list-disc list-inside">
+                                <li>慢慢增大入射角，观察折射光线的变化</li>
+                                <li>当入射角达到临界角时，折射光线沿界面传播</li>
+                                <li>超过临界角后，发生全反射，没有折射光</li>
+                                <li>图中的 i 是入射角，r 是反射角或折射角</li>
+                            </ul>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button onclick="setAngle(30)" class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-sm transition">重置30°</button>
+                            <button onclick="setAngle(criticalAngle)" class="px-4 py-2 rounded-lg bg-yellow-600/30 hover:bg-yellow-600/50 border border-yellow-500/50 text-yellow-300 text-sm transition">临界角</button>
+                            <button onclick="setAngle(60)" class="px-4 py-2 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/50 text-blue-300 text-sm transition">全反射60°</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz-section" class="hidden space-y-6">
+            <div class="text-center py-8">
+                <h2 class="text-3xl font-bold mb-2">🎯 全反射知识挑战</h2>
+                <p class="text-slate-400">完成5道互动题目，测试你的理解程度！</p>
+                <div class="max-w-md mx-auto mt-6 bg-slate-800 rounded-full h-3 overflow-hidden">
+                    <div id="quizProgress" class="progress-fill bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-center gap-2 mt-4" id="starContainer">
+                    <span class="star text-2xl">⭐</span>
+                    <span class="star text-2xl">⭐</span>
+                    <span class="star text-2xl">⭐</span>
+                    <span class="star text-2xl">⭐</span>
+                    <span class="star text-2xl">⭐</span>
+                </div>
+            </div>
+            <div id="questionContainer" class="max-w-3xl mx-auto"></div>
+            <div id="quizResult" class="hidden max-w-2xl mx-auto glass rounded-3xl p-8 text-center">
+                <div class="text-6xl mb-4">🎉</div>
+                <h3 class="text-2xl font-bold mb-2">挑战完成！</h3>
+                <p class="text-slate-300 mb-6">你答对了 <span id="correctCount" class="text-blue-400 font-bold text-xl">0</span>/5 道题</p>
+                <div class="flex justify-center gap-4">
+                    <button onclick="restartQuiz()" class="px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 transition neon-glow">
+                        重新挑战
+                    </button>
+                    <button onclick="showSection('game', this)" class="px-6 py-3 rounded-full bg-purple-600 hover:bg-purple-700 transition">
+                        去玩光纤游戏 →
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="game-section" class="hidden">
+            <div class="text-center py-6">
+                <h2 class="text-3xl font-bold mb-2">🔦 光纤通信大作战</h2>
+                <p class="text-slate-400">调整反射角度，让激光信号顺利传输到终点！</p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2">
+                    <div class="relative bg-slate-800 rounded-2xl overflow-hidden border-2 border-slate-700 shadow-2xl">
+                        <canvas id="gameCanvas" width="800" height="500" class="w-full h-auto block"></canvas>
+                        <div class="absolute top-4 left-4 flex flex-wrap gap-3">
+                            <div class="glass px-4 py-2 rounded-full text-sm">
+                                <span class="text-slate-400">关卡:</span>
+                                <span id="gameLevel" class="text-blue-400 font-bold ml-1">1</span>
+                            </div>
+                            <div class="glass px-4 py-2 rounded-full text-sm">
+                                <span class="text-slate-400">得分:</span>
+                                <span id="gameScore" class="text-green-400 font-bold ml-1">0</span>
+                            </div>
+                            <div class="glass px-4 py-2 rounded-full text-sm">
+                                <span class="text-slate-400">星星:</span>
+                                <span id="gameStars" class="text-yellow-400 font-bold ml-1">0/0</span>
+                            </div>
+                            <div class="glass px-4 py-2 rounded-full text-sm">
+                                <span class="text-slate-400">反射次数:</span>
+                                <span id="bounceCount" class="text-cyan-400 font-bold ml-1">0</span>
+                            </div>
+                        </div>
+
+                        <div id="gameMessage" class="absolute inset-0 flex items-center justify-center bg-black/60 hidden">
+                            <div class="glass rounded-2xl p-8 text-center max-w-sm mx-4 transform scale-100 transition-transform">
+                                <div class="text-5xl mb-4" id="msgIcon">🏆</div>
+                                <h3 class="text-2xl font-bold mb-2" id="msgTitle">关卡完成！</h3>
+                                <p class="text-slate-300 mb-6" id="msgText">光线成功到达接收器！</p>
+                                <button id="msgBtn" onclick="nextLevel()" class="px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 transition w-full">
+                                    下一关
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 glass rounded-xl p-4 space-y-4">
+                        <div class="flex items-center gap-6">
+                            <div class="flex-1">
+                                <label class="text-sm text-slate-400 block mb-2">调整发射角度（相对光纤轴线）</label>
+                                <input type="range" id="gameAngleSlider" min="0" max="80" value="0" class="w-full">
+                            </div>
+                            <div class="text-center px-4 border-l border-slate-700">
+                                <div class="text-2xl font-bold text-blue-400" id="gameAngleDisplay">0°</div>
+                                <div class="text-xs text-slate-500">发射角</div>
+                            </div>
+                            <button onclick="resetGameLevel()" class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-sm transition">
+                                重置
+                            </button>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-400 mb-1"><span>信号能量</span><span id="energyText">100%</span></div>
+                                <div class="w-full h-2 bg-slate-700 rounded-full overflow-hidden"><div id="energyBar" class="h-full bg-gradient-to-r from-green-500 to-cyan-500 rounded-full" style="width:100%"></div></div>
+                            </div>
+                            <div class="text-sm text-slate-300" id="gameHint">先调整到较大的角度，让光线在纤芯壁上发生稳定全反射。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="glass rounded-2xl p-6">
+                        <h3 class="text-lg font-bold text-blue-400 mb-3">🎮 游戏目标</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            让光信号在纤芯内稳定传播，到达接收器前尽量收集沿途星星。每次反射都会有少量能量损耗，若角度过小，光会折射逃逸，传输失败。
+                        </p>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                                <span class="text-slate-300">蓝色 = 稳定传输</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                                <span class="text-slate-300">黄色星星 = 可收集增分点</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <span class="text-slate-300">红色 = 角度太小，发生泄漏</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="text-slate-300">绿色 = 成功接收</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-2xl p-6">
+                        <h3 class="text-lg font-bold text-purple-400 mb-3">💡 物理提示</h3>
+                        <ul class="text-slate-300 text-sm space-y-2 list-disc list-inside">
+                            <li>只有在纤芯到包层的入射角大于临界角时，光才会被困在纤芯里</li>
+                            <li>这里把临界条件近似设置为 43°，用于帮助直观理解</li>
+                            <li>角度过小，虽然路径更直，但更容易从边界漏出</li>
+                            <li>角度过大，反射会更多，路径更长，能量损耗也更大</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass rounded-2xl p-6 bg-gradient-to-br from-blue-900/30 to-purple-900/30">
+                        <h3 class="text-lg font-bold mb-2">当前挑战</h3>
+                        <p id="levelDesc" class="text-slate-300 text-sm">基础直光纤：调整角度让光从起点到达终点</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let currentSection = 'learn';
+        let quizScore = 0;
+        let currentQuestion = 0;
+        let gameLevel = 1;
+        let gameScore = 0;
+        let gameInitialized = false;
+
+        function showSection(section, btn) {
+            document.getElementById('learn-section').classList.add('hidden');
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('game-section').classList.add('hidden');
+            document.getElementById(section + '-section').classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-blue-600', 'neon-glow');
+            });
+            if (btn) btn.classList.add('bg-blue-600', 'neon-glow');
+
+            currentSection = section;
+            if (section === 'quiz' && currentQuestion === 0) loadQuestion();
+            if (section === 'game' && !gameInitialized) {
+                initGame();
+                gameInitialized = true;
+            }
+        }
+
+        const demoCanvas = document.getElementById('demoCanvas');
+        const demoCtx = demoCanvas.getContext('2d');
+        let currentAngle = 30;
+        const n1 = 1.33;
+        const n2 = 1.0;
+        const criticalAngle = Math.asin(n2 / n1) * 180 / Math.PI;
+
+        function resizeDemoCanvas() {
+            const rect = demoCanvas.parentElement.getBoundingClientRect();
+            demoCanvas.width = rect.width;
+            demoCanvas.height = rect.height;
+            drawDemo();
+        }
+
+        function drawAngleArc(cx, cy, startRad, endRad, radius, color, label) {
+            demoCtx.strokeStyle = color;
+            demoCtx.lineWidth = 2;
+            demoCtx.beginPath();
+            demoCtx.arc(cx, cy, radius, startRad, endRad, false);
+            demoCtx.stroke();
+
+            let mid = (startRad + endRad) / 2;
+            if (Math.abs(endRad - startRad) > Math.PI) {
+                mid += Math.PI;
+            }
+            const labelX = cx + (radius + 16) * Math.cos(mid);
+            const labelY = cy + (radius + 16) * Math.sin(mid);
+            demoCtx.fillStyle = color;
+            demoCtx.font = 'bold 16px sans-serif';
+            demoCtx.fillText(label, labelX - 4, labelY + 5);
+        }
+
+        function drawDemo() {
+            const w = demoCanvas.width;
+            const h = demoCanvas.height;
+            const centerX = w / 2;
+            const centerY = h / 2;
+            demoCtx.clearRect(0, 0, w, h);
+
+            demoCtx.fillStyle = 'rgba(30, 41, 59, 0.8)';
+            demoCtx.fillRect(0, centerY, w, h / 2);
+            demoCtx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+            demoCtx.fillRect(0, 0, w, centerY);
+
+            demoCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            demoCtx.lineWidth = 2;
+            demoCtx.setLineDash([5, 5]);
+            demoCtx.beginPath();
+            demoCtx.moveTo(0, centerY);
+            demoCtx.lineTo(w, centerY);
+            demoCtx.stroke();
+            demoCtx.setLineDash([]);
+
+            demoCtx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            demoCtx.font = '14px sans-serif';
+            demoCtx.fillText('空气 (n=1.0)', 20, 30);
+            demoCtx.fillText('水 (n=1.33)', 20, h - 20);
+
+            demoCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            demoCtx.lineWidth = 2;
+            demoCtx.setLineDash([3, 3]);
+            demoCtx.beginPath();
+            demoCtx.moveTo(centerX, 20);
+            demoCtx.lineTo(centerX, h - 20);
+            demoCtx.stroke();
+            demoCtx.setLineDash([]);
+            demoCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            demoCtx.font = '12px sans-serif';
+            demoCtx.fillText('法线', centerX + 5, 35);
+
+            const angleRad = currentAngle * Math.PI / 180;
+            const rayLength = Math.min(w, h) * 0.4;
+
+            const startX = centerX - rayLength * Math.sin(angleRad);
+            const startY = centerY + rayLength * Math.cos(angleRad);
+            demoCtx.strokeStyle = '#ef4444';
+            demoCtx.lineWidth = 3;
+            demoCtx.shadowBlur = 10;
+            demoCtx.shadowColor = '#ef4444';
+            demoCtx.beginPath();
+            demoCtx.moveTo(startX, startY);
+            demoCtx.lineTo(centerX, centerY);
+            demoCtx.stroke();
+            demoCtx.shadowBlur = 0;
+
+            const normalDown = Math.PI / 2;
+            const incidentDir = Math.PI / 2 + angleRad;
+            drawAngleArc(centerX, centerY, normalDown, incidentDir, 44, '#ef4444', 'i');
+
+            if (currentAngle > criticalAngle) {
+                const reflectX = centerX + rayLength * Math.sin(angleRad);
+                const reflectY = centerY + rayLength * Math.cos(angleRad);
+                demoCtx.strokeStyle = '#3b82f6';
+                demoCtx.lineWidth = 3;
+                demoCtx.shadowBlur = 15;
+                demoCtx.shadowColor = '#3b82f6';
+                demoCtx.beginPath();
+                demoCtx.moveTo(centerX, centerY);
+                demoCtx.lineTo(reflectX, reflectY);
+                demoCtx.stroke();
+                demoCtx.shadowBlur = 0;
+
+                const reflectDir = Math.PI / 2 - angleRad;
+                drawAngleArc(centerX, centerY, reflectDir, Math.PI / 2, 60, '#3b82f6', 'r');
+
+                document.getElementById('statusBadge').textContent = '🔵 全反射';
+                document.getElementById('statusBadge').className = 'absolute top-4 right-4 px-4 py-2 rounded-full bg-blue-500/20 border border-blue-500/50 text-blue-400 font-bold text-sm';
+                document.getElementById('explanationText').innerHTML = `入射角为${currentAngle.toFixed(1)}°，<span class="text-blue-400 font-bold">大于临界角${criticalAngle.toFixed(1)}°</span>。发生<span class="text-blue-400 font-bold">全反射</span>，此时 r 表示反射角。`;
+            } else {
+                const sinRefract = (n1 / n2) * Math.sin(angleRad);
+                const refractAngle = Math.asin(sinRefract) * 180 / Math.PI;
+                const refractRad = refractAngle * Math.PI / 180;
+                const refractX = centerX + rayLength * Math.sin(refractRad);
+                const refractY = centerY - rayLength * Math.cos(refractRad);
+
+                demoCtx.strokeStyle = 'rgba(59, 130, 246, 0.85)';
+                demoCtx.lineWidth = 3;
+                demoCtx.setLineDash([]);
+                demoCtx.shadowBlur = 12;
+                demoCtx.shadowColor = '#3b82f6';
+                demoCtx.beginPath();
+                demoCtx.moveTo(centerX, centerY);
+                demoCtx.lineTo(refractX, refractY);
+                demoCtx.stroke();
+                demoCtx.shadowBlur = 0;
+
+                const reflectX = centerX + rayLength * 0.28 * Math.sin(angleRad);
+                const reflectY = centerY + rayLength * 0.28 * Math.cos(angleRad);
+                demoCtx.strokeStyle = 'rgba(239, 68, 68, 0.28)';
+                demoCtx.lineWidth = 2;
+                demoCtx.beginPath();
+                demoCtx.moveTo(centerX, centerY);
+                demoCtx.lineTo(reflectX, reflectY);
+                demoCtx.stroke();
+
+                const normalUp = -Math.PI / 2;
+                drawAngleArc(centerX, centerY, normalUp, normalUp + refractRad, 60, '#3b82f6', 'r');
+
+                if (Math.abs(currentAngle - criticalAngle) < 1) {
+                    document.getElementById('statusBadge').textContent = '⚠️ 临界状态';
+                    document.getElementById('statusBadge').className = 'absolute top-4 right-4 px-4 py-2 rounded-full bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 font-bold text-sm';
+                    document.getElementById('explanationText').innerHTML = `入射角接近临界角${criticalAngle.toFixed(1)}°。此时 r 表示折射角，折射光几乎沿界面传播。`;
+                } else {
+                    document.getElementById('statusBadge').textContent = '🟢 正常折射';
+                    document.getElementById('statusBadge').className = 'absolute top-4 right-4 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/50 text-green-400 font-bold text-sm';
+                    document.getElementById('explanationText').innerHTML = `入射角为${currentAngle.toFixed(1)}°，<span class="text-green-400 font-bold">小于临界角${criticalAngle.toFixed(1)}°</span>。图中 i 表示入射角，r 表示折射角。`;
+                }
+            }
+        }
+
+        function setAngle(angle) {
+            currentAngle = angle;
+            document.getElementById('angleSlider').value = angle;
+            document.getElementById('angleDisplay').textContent = angle.toFixed(1) + '°';
+            drawDemo();
+        }
+
+        document.getElementById('angleSlider').addEventListener('input', function(e) {
+            setAngle(parseFloat(e.target.value));
+        });
+
+        const questions = [
+            {
+                question: '光从水中射入空气时，发生全反射的临界角约为多少？（水的折射率n=1.33）',
+                options: ['30°', '41.8°', '48.6°', '60°'],
+                correct: 2,
+                explanation: '根据公式 sin C = n₂/n₁ = 1/1.33 ≈ 0.75，所以 C ≈ 48.6°',
+                type: 'calculation'
+            },
+            {
+                question: '下列哪种现象与全反射无关？',
+                options: ['钻石的璀璨光芒', '海市蜃楼', '彩虹的形成', '光纤通信'],
+                correct: 2,
+                explanation: '彩虹是光的折射和色散形成的，与全反射无关。其他三项都是全反射的应用。',
+                type: 'concept'
+            },
+            {
+                question: '如图所示，光线从玻璃（n=1.5）射入空气，入射角为50°，会发生什么现象？',
+                options: ['光线全部折射进入空气', '部分反射，部分折射', '发生全反射，无折射光', '光线被吸收'],
+                correct: 2,
+                explanation: '玻璃到空气的临界角为 sin⁻¹(1/1.5) ≈ 41.8°，50° > 41.8°，所以发生全反射。',
+                type: 'application',
+                visual: true
+            },
+            {
+                question: '光纤通信利用全反射原理传输信号，为了使光在光纤中发生全反射，应该：',
+                options: ['让光从光纤射向空气，入射角小于临界角', '让光从光纤射向空气，入射角大于临界角', '让光从空气射入光纤，入射角大于临界角', '让光垂直于光纤端面入射'],
+                correct: 1,
+                explanation: '光必须在光纤内部射向包层（光疏介质），且入射角大于临界角才能不断全反射前进。',
+                type: 'application'
+            },
+            {
+                question: '夏天路面看起来有“水迹”（海市蜃楼），这是因为：',
+                options: ['路面真的有水', '光的衍射现象', '路面附近热空气密度小，光发生全反射', '光的干涉现象'],
+                correct: 2,
+                explanation: '路面附近空气温度高、密度小（折射率小），远处物体光线射向路面时发生全反射，看起来像是水面倒影。',
+                type: 'phenomenon'
+            }
+        ];
+
+        let userAnswers = [];
+        let selectedOption = null;
+
+        function loadQuestion() {
+            const container = document.getElementById('questionContainer');
+            const q = questions[currentQuestion];
+            let html = `
+                <div class="glass rounded-3xl p-8 animate-fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold text-lg">${currentQuestion + 1}</span>
+                        <span class="text-slate-400 text-sm">题目 ${currentQuestion + 1}/5</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-6 leading-relaxed">${q.question}</h3>
+            `;
+            if (q.visual) {
+                html += `<div class="bg-slate-800 rounded-xl p-4 mb-6 h-48 flex items-center justify-center"><canvas id="q${currentQuestion}Canvas" width="300" height="150"></canvas></div>`;
+            }
+            html += `<div class="grid gap-3 mb-6">`;
+            q.options.forEach((opt, idx) => {
+                html += `
+                    <button onclick="selectOption(${idx})" id="opt${idx}" class="option-card w-full text-left p-4 rounded-xl border-2 border-slate-700 bg-slate-800/50 hover:border-slate-500 transition group">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-sm font-bold group-hover:bg-blue-600 transition" id="badge${idx}">${String.fromCharCode(65 + idx)}</div>
+                            <span class="text-slate-200">${opt}</span>
+                        </div>
+                    </button>
+                `;
+            });
+            html += `</div>
+                <div id="explanationBox" class="hidden bg-slate-800/80 rounded-xl p-4 mb-4 border-l-4 border-blue-500">
+                    <p class="text-slate-300 text-sm">${q.explanation}</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <button onclick="submitAnswer(event)" id="submitBtn" class="px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 transition font-bold disabled:opacity-50 disabled:cursor-not-allowed" disabled>提交答案</button>
+                    <button onclick="nextQuestion()" id="nextBtn" class="hidden px-6 py-3 rounded-full bg-green-600 hover:bg-green-700 transition font-bold">下一题 →</button>
+                </div>
+            </div>`;
+            container.innerHTML = html;
+            if (q.visual) setTimeout(() => drawQuestionVisual(currentQuestion), 100);
+            document.getElementById('quizProgress').style.width = ((currentQuestion / questions.length) * 100) + '%';
+        }
+
+        function drawQuestionVisual(qIdx) {
+            const canvas = document.getElementById(`q${qIdx}Canvas`);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'rgba(30, 41, 59, 0.8)';
+            ctx.fillRect(0, 75, 300, 75);
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+            ctx.fillRect(0, 0, 300, 75);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.beginPath();
+            ctx.moveTo(0, 75);
+            ctx.lineTo(300, 75);
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.setLineDash([3, 3]);
+            ctx.beginPath();
+            ctx.moveTo(150, 20);
+            ctx.lineTo(150, 130);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(100, 130);
+            ctx.lineTo(150, 75);
+            ctx.stroke();
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(150, 75);
+            ctx.lineTo(200, 130);
+            ctx.stroke();
+            ctx.fillStyle = 'white';
+            ctx.font = '12px sans-serif';
+            ctx.fillText('玻璃 n=1.5', 20, 110);
+            ctx.fillText('空气 n=1.0', 20, 30);
+            ctx.fillText('50°', 130, 100);
+        }
+
+        function selectOption(idx) {
+            document.querySelectorAll('.option-card').forEach((card, i) => {
+                card.classList.remove('selected');
+                document.getElementById(`badge${i}`).classList.remove('bg-blue-600');
+            });
+            document.getElementById(`opt${idx}`).classList.add('selected');
+            document.getElementById(`badge${idx}`).classList.add('bg-blue-600');
+            selectedOption = idx;
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function submitAnswer(ev) {
+            if (selectedOption === null) return;
+            const q = questions[currentQuestion];
+            const isCorrect = selectedOption === q.correct;
+            document.getElementById(`opt${q.correct}`).classList.add('correct');
+            if (!isCorrect) document.getElementById(`opt${selectedOption}`).classList.add('wrong');
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.onclick = null;
+                card.style.cursor = 'default';
+            });
+            document.getElementById('explanationBox').classList.remove('hidden');
+            document.getElementById('submitBtn').classList.add('hidden');
+            document.getElementById('nextBtn').classList.remove('hidden');
+            if (isCorrect) {
+                quizScore++;
+                document.querySelectorAll('.star')[currentQuestion].classList.add('earned', 'text-yellow-400');
+                if (ev) createParticles(ev.clientX, ev.clientY);
+            }
+            userAnswers.push({ question: currentQuestion, correct: isCorrect, selected: selectedOption });
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            selectedOption = null;
+            if (currentQuestion >= questions.length) showQuizResult();
+            else loadQuestion();
+        }
+
+        function showQuizResult() {
+            document.getElementById('questionContainer').classList.add('hidden');
+            document.getElementById('quizResult').classList.remove('hidden');
+            document.getElementById('correctCount').textContent = quizScore;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            quizScore = 0;
+            userAnswers = [];
+            selectedOption = null;
+            document.getElementById('questionContainer').classList.remove('hidden');
+            document.getElementById('quizResult').classList.add('hidden');
+            document.querySelectorAll('.star').forEach(star => star.classList.remove('earned', 'text-yellow-400'));
+            loadQuestion();
+        }
+
+        function createParticles(x, y) {
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle w-2 h-2 rounded-full bg-yellow-400';
+                particle.style.left = x + Math.random() * 40 - 20 + 'px';
+                particle.style.top = y + 'px';
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 3000);
+            }
+        }
+
+        const gameCanvas = document.getElementById('gameCanvas');
+        const gameCtx = gameCanvas.getContext('2d');
+        let laserAngle = 0;
+        let lightPath = [];
+        let transmissionSuccess = false;
+        let hasUserInteracted = false;
+        let signalEnergy = 100;
+        let collectedStars = 0;
+        let collectedStarIds = new Set();
+        let bounceTotal = 0;
+
+        const levels = [
+            { name: '基础直光纤', desc: '基础直光纤：先找到既不泄漏、又能顺利到达终点的角度，并尽量收集星星', fiber: [{x: 50, y: 250, w: 700, h: 60}], start: {x: 80, y: 280}, end: {x: 720, y: 280, r: 30}, stars: [{x: 260, y: 280, r: 9}, {x: 470, y: 280, r: 9}] },
+            { name: '弯曲挑战', desc: '光线需要绕过拐角：角度太小会漏出，角度过大则能量损耗更快', fiber: [{x: 50, y: 200, w: 300, h: 60},{x: 320, y: 200, w: 60, h: 150},{x: 320, y: 350, w: 400, h: 60}], start: {x: 80, y: 230}, end: {x: 680, y: 380, r: 30}, stars: [{x: 250, y: 230, r: 9}, {x: 350, y: 300, r: 9}, {x: 560, y: 380, r: 9}] },
+            { name: 'S型隧道', desc: 'S形光纤：需要在多次全反射和能量损耗之间找到平衡', fiber: [{x: 50, y: 150, w: 200, h: 60},{x: 220, y: 150, w: 60, h: 200},{x: 220, y: 350, w: 200, h: 60},{x: 420, y: 150, w: 60, h: 260},{x: 420, y: 150, w: 300, h: 60}], start: {x: 80, y: 180}, end: {x: 680, y: 180, r: 30}, stars: [{x: 190, y: 180, r: 9}, {x: 250, y: 320, r: 9}, {x: 380, y: 380, r: 9}, {x: 450, y: 220, r: 9}, {x: 610, y: 180, r: 9}] }
+        ];
+
+        function initGame() {
+            gameLevel = 1;
+            gameScore = 0;
+            hasUserInteracted = false;
+            loadGameLevel();
+            const slider = document.getElementById('gameAngleSlider');
+            slider.oninput = function(e) {
+                laserAngle = parseInt(e.target.value);
+                document.getElementById('gameAngleDisplay').textContent = laserAngle + '°';
+                hasUserInteracted = true;
+                simulateTransmission();
+            };
+            drawGame();
+        }
+
+        function loadGameLevel() {
+            const level = levels[gameLevel - 1];
+            document.getElementById('gameLevel').textContent = gameLevel;
+            document.getElementById('levelDesc').textContent = level.desc;
+            document.getElementById('gameMessage').classList.add('hidden');
+            transmissionSuccess = false;
+            hasUserInteracted = false;
+            laserAngle = 0;
+            signalEnergy = 100;
+            collectedStars = 0;
+            collectedStarIds = new Set();
+            bounceTotal = 0;
+            document.getElementById('gameAngleSlider').value = 0;
+            document.getElementById('gameAngleDisplay').textContent = '0°';
+            document.getElementById('gameStars').textContent = `0/${level.stars.length}`;
+            document.getElementById('bounceCount').textContent = '0';
+            document.getElementById('energyText').textContent = '100%';
+            document.getElementById('energyBar').style.width = '100%';
+            document.getElementById('gameHint').textContent = '先调整到较大的角度，让光线在纤芯壁上发生稳定全反射。';
+            drawGame();
+        }
+
+        function resetGameLevel() {
+            loadGameLevel();
+        }
+
+        function simulateTransmission() {
+            const level = levels[gameLevel - 1];
+            lightPath = [];
+            let x = level.start.x;
+            let y = level.start.y;
+            let angle = laserAngle * Math.PI / 180;
+            let dx = Math.cos(angle) * 5;
+            let dy = Math.sin(angle) * 5;
+            let path = [{x, y, type: 'start'}];
+            let escaped = false;
+            let reachedEnd = false;
+            let localEnergy = 100;
+            let localBounces = 0;
+            let localStars = new Set();
+
+            for (let i = 0; i < 1400; i++) {
+                x += dx;
+                y += dy;
+
+                level.stars.forEach((star, idx) => {
+                    if (!localStars.has(idx)) {
+                        const d = Math.hypot(x - star.x, y - star.y);
+                        if (d < star.r + 6) {
+                            localStars.add(idx);
+                            path.push({x, y, type: 'star'});
+                            localEnergy = Math.min(100, localEnergy + 6);
+                        }
+                    }
+                });
+
+                const distToEnd = Math.sqrt((x - level.end.x) ** 2 + (y - level.end.y) ** 2);
+                if (distToEnd < level.end.r && localEnergy > 0) {
+                    path.push({x, y, type: 'success'});
+                    reachedEnd = true;
+                    break;
+                }
+
+                let inFiber = false;
+                for (let f of level.fiber) {
+                    if (x >= f.x && x <= f.x + f.w && y >= f.y && y <= f.y + f.h) { inFiber = true; break; }
+                }
+
+                if (!inFiber) {
+                    let normal = null;
+                    for (let f of level.fiber) {
+                        if (x >= f.x && x <= f.x + f.w) {
+                            if (Math.abs(y - f.y) < 5 && dy < 0) normal = {x: 0, y: 1};
+                            else if (Math.abs(y - (f.y + f.h)) < 5 && dy > 0) normal = {x: 0, y: -1};
+                        }
+                        if (y >= f.y && y <= f.y + f.h) {
+                            if (Math.abs(x - f.x) < 5 && dx < 0) normal = {x: 1, y: 0};
+                            else if (Math.abs(x - (f.x + f.w)) < 5 && dx > 0) normal = {x: -1, y: 0};
+                        }
+                    }
+
+                    if (normal) {
+                        const incidentAngle = Math.acos((-dx * normal.x - dy * normal.y) / Math.sqrt(dx * dx + dy * dy));
+                        const incidentDeg = incidentAngle * 180 / Math.PI;
+                        if (incidentDeg > 43) {
+                            const dot = 2 * (dx * normal.x + dy * normal.y);
+                            dx = dx - dot * normal.x;
+                            dy = dy - dot * normal.y;
+                            localBounces++;
+                            localEnergy -= 6;
+                            path.push({x, y, type: 'bounce', angle: incidentDeg});
+                        } else {
+                            path.push({x, y, type: 'escape'});
+                            escaped = true;
+                            localEnergy -= 35;
+                            break;
+                        }
+                    } else {
+                        path.push({x, y, type: 'escape'});
+                        escaped = true;
+                        localEnergy -= 35;
+                        break;
+                    }
+                }
+
+                localEnergy -= 0.03;
+                if (localEnergy <= 0) {
+                    path.push({x, y, type: 'fade'});
+                    escaped = true;
+                    break;
+                }
+
+                if (x < 0 || x > 800 || y < 0 || y > 500) {
+                    path.push({x, y, type: 'escape'});
+                    escaped = true;
+                    break;
+                }
+            }
+
+            lightPath = path;
+            transmissionSuccess = reachedEnd && !escaped;
+            signalEnergy = Math.max(0, Math.round(localEnergy));
+            collectedStarIds = localStars;
+            collectedStars = localStars.size;
+            bounceTotal = localBounces;
+
+            document.getElementById('gameStars').textContent = `${collectedStars}/${level.stars.length}`;
+            document.getElementById('bounceCount').textContent = String(bounceTotal);
+            document.getElementById('energyText').textContent = `${signalEnergy}%`;
+            document.getElementById('energyBar').style.width = `${signalEnergy}%`;
+
+            if (!hasUserInteracted) {
+                document.getElementById('gameHint').textContent = '先调整到较大的角度，让光线在纤芯壁上发生稳定全反射。';
+            } else if (transmissionSuccess) {
+                document.getElementById('gameHint').textContent = collectedStars === level.stars.length ? '完美传输。你收集了全部星星。' : '已成功到达终点。还可以继续优化角度，多收集一些星星。';
+            } else if (laserAngle < 8) {
+                document.getElementById('gameHint').textContent = '角度偏小，光线更容易在边界处泄漏。';
+            } else if (signalEnergy < 35) {
+                document.getElementById('gameHint').textContent = '反射次数过多，能量损耗太大。试着找更高效的角度。';
+            } else {
+                document.getElementById('gameHint').textContent = '继续微调角度，观察泄漏点和反射次数。';
+            }
+
+            drawGame();
+            if (transmissionSuccess && hasUserInteracted) {
+                setTimeout(() => {
+                    if (!document.getElementById('gameMessage').classList.contains('hidden')) return;
+                    showGameMessage(true);
+                }, 300);
+            }
+        }
+
+        function drawGame() {
+            const ctx = gameCtx;
+            const level = levels[gameLevel - 1];
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, 800, 500);
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
+            ctx.strokeStyle = 'rgba(59, 130, 246, 0.6)';
+            ctx.lineWidth = 3;
+            level.fiber.forEach(f => {
+                ctx.fillRect(f.x, f.y, f.w, f.h);
+                ctx.strokeRect(f.x, f.y, f.w, f.h);
+            });
+            level.stars.forEach((star, idx) => {
+                const got = collectedStarIds.has(idx);
+                ctx.beginPath();
+                ctx.fillStyle = got ? 'rgba(250, 204, 21, 0.25)' : 'rgba(250, 204, 21, 0.95)';
+                ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = got ? 'rgba(250, 204, 21, 0.25)' : 'rgba(254, 240, 138, 1)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(level.start.x, level.start.y, 8, 0, Math.PI * 2);
+            ctx.fill();
+            const gradient = ctx.createRadialGradient(level.end.x, level.end.y, 0, level.end.x, level.end.y, level.end.r);
+            if (transmissionSuccess && hasUserInteracted) {
+                gradient.addColorStop(0, 'rgba(34, 197, 94, 0.8)');
+                gradient.addColorStop(1, 'rgba(34, 197, 94, 0.2)');
+            } else {
+                gradient.addColorStop(0, 'rgba(34, 197, 94, 0.3)');
+                gradient.addColorStop(1, 'rgba(34, 197, 94, 0.05)');
+            }
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(level.end.x, level.end.y, level.end.r, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#22c55e';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            if (lightPath.length > 1 && hasUserInteracted) {
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                for (let i = 0; i < lightPath.length - 1; i++) {
+                    const p1 = lightPath[i];
+                    const p2 = lightPath[i + 1];
+                    if (p2.type === 'escape' || p2.type === 'fade') {
+                        ctx.strokeStyle = '#ef4444';
+                        ctx.setLineDash([5, 5]);
+                    } else if (p2.type === 'success') {
+                        ctx.strokeStyle = '#22c55e';
+                        ctx.setLineDash([]);
+                    } else if (p2.type === 'star') {
+                        ctx.strokeStyle = '#facc15';
+                        ctx.setLineDash([]);
+                    } else {
+                        ctx.strokeStyle = '#3b82f6';
+                        ctx.setLineDash([]);
+                    }
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+            } else {
+                ctx.strokeStyle = 'rgba(59, 130, 246, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(level.start.x, level.start.y);
+                const previewLength = 100;
+                const angle = laserAngle * Math.PI / 180;
+                ctx.lineTo(level.start.x + Math.cos(angle) * previewLength, level.start.y + Math.sin(angle) * previewLength);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+            ctx.fillStyle = 'white';
+            ctx.font = '14px sans-serif';
+            ctx.fillText('激光源', level.start.x - 20, level.start.y - 15);
+            ctx.fillText('接收器', level.end.x - 25, level.end.y - 35);
+        }
+
+        function showGameMessage(success) {
+            const msg = document.getElementById('gameMessage');
+            const icon = document.getElementById('msgIcon');
+            const title = document.getElementById('msgTitle');
+            const text = document.getElementById('msgText');
+            const btn = document.getElementById('msgBtn');
+            if (success) {
+                icon.textContent = '🎉';
+                title.textContent = '传输成功！';
+                const level = levels[gameLevel - 1];
+                const stageScore = 100 + collectedStars * 20 + signalEnergy;
+                text.textContent = `成功到达接收器。反射 ${bounceTotal} 次，收集 ${collectedStars}/${level.stars.length} 颗星，保留能量 ${signalEnergy}%。`;
+                btn.textContent = gameLevel < levels.length ? '下一关 →' : '完成挑战';
+                btn.onclick = nextLevel;
+                gameScore += stageScore;
+                document.getElementById('gameScore').textContent = gameScore;
+            }
+            msg.classList.remove('hidden');
+        }
+
+        function nextLevel() {
+            if (gameLevel < levels.length) {
+                gameLevel++;
+                loadGameLevel();
+            } else {
+                alert(`恭喜完成所有关卡！总分：${gameScore}`);
+                gameLevel = 1;
+                gameScore = 0;
+                gameInitialized = false;
+                initGame();
+            }
+        }
+
+        window.addEventListener('resize', resizeDemoCanvas);
+        resizeDemoCanvas();
+        document.getElementById('criticalInfo').textContent = `临界角: ${criticalAngle.toFixed(1)}°`;
+    </script>
+</body>
+</html>
