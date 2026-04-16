@@ -21,6 +21,7 @@
             --canvas-bg: #0c1223;
             --game-bg: #080c1a;
         }
+
         body.light-theme {
             --bg-deep: #f8fafc;
             --bg-card: rgba(255, 255, 255, 0.78);
@@ -35,92 +36,279 @@
             --canvas-bg: #ffffff;
             --game-bg: #ffffff;
         }
-        body.light-theme .ambient-bg {
-            background:
-                radial-gradient(ellipse 600px 400px at 15% 20%, rgba(147,197,253,0.3) 0%, transparent 70%),
-                radial-gradient(ellipse 500px 500px at 80% 75%, rgba(196,181,253,0.25) 0%, transparent 70%),
-                radial-gradient(ellipse 400px 300px at 50% 50%, rgba(147,197,253,0.15) 0%, transparent 70%);
-        }
-        body.light-theme .glass {
-            background: rgba(255, 255, 255, 0.78);
-            border: 1px solid rgba(148, 163, 184, 0.22);
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-        }
-        body.light-theme .glass-highlight {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
-        }
-        body.light-theme .nav-pill:not(.active) { color: #475569; }
-        body.light-theme .nav-pill:not(.active):hover { background: rgba(241,245,249,0.8); }
-        body.light-theme .nav-pill.active { box-shadow: 0 0 16px rgba(59,130,246,0.22), 0 0 30px rgba(59,130,246,0.12); }
-        body.light-theme .concept-card { background: rgba(248,250,252,0.8); border-color: rgba(148,163,184,0.18); }
-        body.light-theme .concept-card:hover { border-color: rgba(148,163,184,0.35); }
-        body.light-theme .feature-card { box-shadow: 0 4px 16px rgba(15,23,42,0.04); }
-        body.light-theme .feature-card:hover { box-shadow: 0 16px 48px rgba(15,23,42,0.1); }
-        body.light-theme .option-card { border-color: #e2e8f0; background: rgba(255,255,255,0.8); }
-        body.light-theme .option-card:hover { border-color: #cbd5e1; box-shadow: 0 12px 20px -5px rgba(15,23,42,0.08); }
-        body.light-theme .option-card .text-slate-200 { color: #334155 !important; }
-        body.light-theme .option-card.selected { border-color: #3b82f6; background: rgba(59,130,246,0.08); }
-        body.light-theme .text-slate-400 { color: #94a3b8 !important; }
-        body.light-theme .text-slate-300 { color: #64748b !important; }
-        body.light-theme .text-slate-500 { color: #64748b !important; }
-        body.light-theme .bg-slate-800 { background: #f1f5f9 !important; }
-        body.light-theme .bg-slate-700 { background: #e2e8f0 !important; }
-        body.light-theme .medium-tab { background: rgba(241,245,249,0.8); color: #64748b; border-color: rgba(148,163,184,0.2); }
-        body.light-theme .medium-tab:hover { border-color: rgba(148,163,184,0.4); color: #334155; }
-        body.light-theme .medium-tab.active { background: rgba(59,130,246,0.08); border-color: #3b82f6; color: #2563eb; }
-        body.light-theme .app-pill { background: rgba(241,245,249,0.9); border-color: rgba(148,163,184,0.2); color: #475569; }
-        body.light-theme .app-pill:hover { background: rgba(219,234,254,0.5); border-color: rgba(59,130,246,0.25); }
-        body.light-theme .detail-overlay { background: rgba(248,250,252,0.92); }
-        body.light-theme .detail-panel { background: linear-gradient(160deg, rgba(255,255,255,0.97), rgba(248,250,252,0.98)); border-color: rgba(148,163,184,0.2); box-shadow: 0 32px 80px rgba(15,23,42,0.12); }
-        body.light-theme .detail-diagram { background: #f8fafc; border-color: rgba(148,163,184,0.18); }
-        body.light-theme .detail-keypoint { background: rgba(248,250,252,0.8); border-color: rgba(148,163,184,0.15); }
-        body.light-theme .detail-back { color: #64748b; }
-        body.light-theme .detail-back:hover { color: #2563eb; }
-        body.light-theme input[type=range]::-webkit-slider-thumb { box-shadow: 0 0 8px rgba(59,130,246,0.35); }
-        body.light-theme input[type=range]::-webkit-slider-runnable-track { background: rgba(59,130,246,0.22); }
+
+            body.light-theme .ambient-bg {
+                background: radial-gradient(ellipse 600px 400px at 15% 20%, rgba(147,197,253,0.3) 0%, transparent 70%), radial-gradient(ellipse 500px 500px at 80% 75%, rgba(196,181,253,0.25) 0%, transparent 70%), radial-gradient(ellipse 400px 300px at 50% 50%, rgba(147,197,253,0.15) 0%, transparent 70%);
+            }
+
+            body.light-theme .glass {
+                background: rgba(255, 255, 255, 0.78);
+                border: 1px solid rgba(148, 163, 184, 0.22);
+                box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+            }
+
+            body.light-theme .glass-highlight {
+                background: rgba(255, 255, 255, 0.7);
+                border: 1px solid rgba(148, 163, 184, 0.18);
+                box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+            }
+
+            body.light-theme .nav-pill:not(.active) {
+                color: #475569;
+            }
+
+                body.light-theme .nav-pill:not(.active):hover {
+                    background: rgba(241,245,249,0.8);
+                }
+
+            body.light-theme .nav-pill.active {
+                box-shadow: 0 0 16px rgba(59,130,246,0.22), 0 0 30px rgba(59,130,246,0.12);
+            }
+
+            body.light-theme .concept-card {
+                background: rgba(248,250,252,0.8);
+                border-color: rgba(148,163,184,0.18);
+            }
+
+                body.light-theme .concept-card:hover {
+                    border-color: rgba(148,163,184,0.35);
+                }
+
+            body.light-theme .feature-card {
+                box-shadow: 0 4px 16px rgba(15,23,42,0.04);
+            }
+
+                body.light-theme .feature-card:hover {
+                    box-shadow: 0 16px 48px rgba(15,23,42,0.1);
+                }
+
+            body.light-theme .option-card {
+                border-color: #e2e8f0;
+                background: rgba(255,255,255,0.8);
+            }
+
+                body.light-theme .option-card:hover {
+                    border-color: #cbd5e1;
+                    box-shadow: 0 12px 20px -5px rgba(15,23,42,0.08);
+                }
+
+                body.light-theme .option-card .text-slate-200 {
+                    color: #334155 !important;
+                }
+
+                body.light-theme .option-card.selected {
+                    border-color: #3b82f6;
+                    background: rgba(59,130,246,0.08);
+                }
+
+            body.light-theme .text-slate-400 {
+                color: #94a3b8 !important;
+            }
+
+            body.light-theme .text-slate-300 {
+                color: #64748b !important;
+            }
+
+            body.light-theme .text-slate-500 {
+                color: #64748b !important;
+            }
+
+            body.light-theme .bg-slate-800 {
+                background: #f1f5f9 !important;
+            }
+
+            body.light-theme .bg-slate-700 {
+                background: #e2e8f0 !important;
+            }
+
+            body.light-theme .medium-tab {
+                background: rgba(241,245,249,0.8);
+                color: #64748b;
+                border-color: rgba(148,163,184,0.2);
+            }
+
+                body.light-theme .medium-tab:hover {
+                    border-color: rgba(148,163,184,0.4);
+                    color: #334155;
+                }
+
+                body.light-theme .medium-tab.active {
+                    background: rgba(59,130,246,0.08);
+                    border-color: #3b82f6;
+                    color: #2563eb;
+                }
+
+            body.light-theme .app-pill {
+                background: rgba(241,245,249,0.9);
+                border-color: rgba(148,163,184,0.2);
+                color: #475569;
+            }
+
+                body.light-theme .app-pill:hover {
+                    background: rgba(219,234,254,0.5);
+                    border-color: rgba(59,130,246,0.25);
+                }
+
+            body.light-theme .detail-overlay {
+                background: rgba(248,250,252,0.92);
+            }
+
+            body.light-theme .detail-panel {
+                background: linear-gradient(160deg, rgba(255,255,255,0.97), rgba(248,250,252,0.98));
+                border-color: rgba(148,163,184,0.2);
+                box-shadow: 0 32px 80px rgba(15,23,42,0.12);
+            }
+
+            body.light-theme .detail-diagram {
+                background: #f8fafc;
+                border-color: rgba(148,163,184,0.18);
+            }
+
+            body.light-theme .detail-keypoint {
+                background: rgba(248,250,252,0.8);
+                border-color: rgba(148,163,184,0.15);
+            }
+
+            body.light-theme .detail-back {
+                color: #64748b;
+            }
+
+                body.light-theme .detail-back:hover {
+                    color: #2563eb;
+                }
+
+            body.light-theme input[type=range]::-webkit-slider-thumb {
+                box-shadow: 0 0 8px rgba(59,130,246,0.35);
+            }
+
+            body.light-theme input[type=range]::-webkit-slider-runnable-track {
+                background: rgba(59,130,246,0.22);
+            }
 
         /* ── Quiz theme-aware classes ── */
-        .quiz-visual-box { background: rgba(15,23,42,0.8); }
-        .quiz-option-border { border-color: rgba(51,65,85,0.5); background: rgba(15,23,42,0.3); }
-        .quiz-option-border:hover { border-color: rgba(100,116,139,0.6); }
-        .quiz-badge-bg { background: #334155; color: #e2e8f0; }
-        .quiz-option-text { color: #e2e8f0; }
-        .quiz-explanation { background: rgba(15,23,42,0.6); }
-        body.light-theme .quiz-visual-box { background: #f1f5f9; }
-        body.light-theme .quiz-option-border { border-color: #e2e8f0; background: rgba(255,255,255,0.6); }
-        body.light-theme .quiz-option-border:hover { border-color: #cbd5e1; }
-        body.light-theme .quiz-badge-bg { background: #e2e8f0; color: #475569; }
-        body.light-theme .quiz-option-text { color: #334155; }
-        body.light-theme .quiz-explanation { background: rgba(241,245,249,0.9); }
+        .quiz-visual-box {
+            background: rgba(15,23,42,0.8);
+        }
+
+        .quiz-option-border {
+            border-color: rgba(51,65,85,0.5);
+            background: rgba(15,23,42,0.3);
+        }
+
+            .quiz-option-border:hover {
+                border-color: rgba(100,116,139,0.6);
+            }
+
+        .quiz-badge-bg {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+        .quiz-option-text {
+            color: #e2e8f0;
+        }
+
+        .quiz-explanation {
+            background: rgba(15,23,42,0.6);
+        }
+
+        body.light-theme .quiz-visual-box {
+            background: #f1f5f9;
+        }
+
+        body.light-theme .quiz-option-border {
+            border-color: #e2e8f0;
+            background: rgba(255,255,255,0.6);
+        }
+
+            body.light-theme .quiz-option-border:hover {
+                border-color: #cbd5e1;
+            }
+
+        body.light-theme .quiz-badge-bg {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        body.light-theme .quiz-option-text {
+            color: #334155;
+        }
+
+        body.light-theme .quiz-explanation {
+            background: rgba(241,245,249,0.9);
+        }
         /* Correct/wrong stronger in light mode */
-        body.light-theme .option-card.correct { border-color: #10b981; background: rgba(16,185,129,0.12); box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
-        body.light-theme .option-card.wrong { border-color: #ef4444; background: rgba(239,68,68,0.1); box-shadow: 0 0 0 3px rgba(239,68,68,0.12); }
-        body.light-theme .option-card.selected { border-color: #3b82f6; background: rgba(59,130,246,0.08); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+        body.light-theme .option-card.correct {
+            border-color: #10b981;
+            background: rgba(16,185,129,0.12);
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.15);
+        }
+
+        body.light-theme .option-card.wrong {
+            border-color: #ef4444;
+            background: rgba(239,68,68,0.1);
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.12);
+        }
+
+        body.light-theme .option-card.selected {
+            border-color: #3b82f6;
+            background: rgba(59,130,246,0.08);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+        }
 
         /* ── Formula box ── */
-        .formula-box { background: rgba(15,23,42,0.7); }
-        body.light-theme .formula-box { background: rgba(241,245,249,0.9); }
+        .formula-box {
+            background: rgba(15,23,42,0.7);
+        }
+
+        body.light-theme .formula-box {
+            background: rgba(241,245,249,0.9);
+        }
         /* Theme toggle button */
         .theme-toggle {
-            width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem; cursor: pointer; transition: all .25s ease;
-            background: rgba(255,255,255,0.06); border: 1px solid var(--border-subtle);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all .25s ease;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border-subtle);
         }
-        .theme-toggle:hover { background: rgba(255,255,255,0.12); transform: scale(1.1); }
-        body.light-theme .theme-toggle { background: rgba(0,0,0,0.04); }
-        body.light-theme .theme-toggle:hover { background: rgba(0,0,0,0.08); }
-        * { box-sizing: border-box; }
-        body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg-deep); color: var(--text-primary); }
+
+            .theme-toggle:hover {
+                background: rgba(255,255,255,0.12);
+                transform: scale(1.1);
+            }
+
+        body.light-theme .theme-toggle {
+            background: rgba(0,0,0,0.04);
+        }
+
+            body.light-theme .theme-toggle:hover {
+                background: rgba(0,0,0,0.08);
+            }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+        }
 
         /* ── Ambient background ── */
         .ambient-bg {
-            position: fixed; inset: 0; pointer-events: none; z-index: 0;
-            background:
-                radial-gradient(ellipse 600px 400px at 15% 20%, rgba(34,211,238,0.07) 0%, transparent 70%),
-                radial-gradient(ellipse 500px 500px at 80% 75%, rgba(168,85,247,0.06) 0%, transparent 70%),
-                radial-gradient(ellipse 400px 300px at 50% 50%, rgba(59,130,246,0.04) 0%, transparent 70%);
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(ellipse 600px 400px at 15% 20%, rgba(34,211,238,0.07) 0%, transparent 70%), radial-gradient(ellipse 500px 500px at 80% 75%, rgba(168,85,247,0.06) 0%, transparent 70%), radial-gradient(ellipse 400px 300px at 50% 50%, rgba(59,130,246,0.04) 0%, transparent 70%);
         }
 
         /* ── Glass card ── */
@@ -129,6 +317,7 @@
             backdrop-filter: blur(16px);
             border: 1px solid var(--border-subtle);
         }
+
         .glass-highlight {
             background: linear-gradient(135deg, rgba(34,211,238,0.06) 0%, rgba(168,85,247,0.04) 100%);
             backdrop-filter: blur(16px);
@@ -136,145 +325,392 @@
         }
 
         /* ── Nav ── */
-        .nav-pill { border-radius: 9999px; padding: 0.45rem 1.25rem; font-size: 0.85rem; font-weight: 500; transition: all .25s ease; }
-        .nav-pill.active { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); box-shadow: 0 0 20px rgba(99,102,241,0.35); }
-        .nav-pill:not(.active):hover { background: rgba(255,255,255,0.06); }
+        .nav-pill {
+            border-radius: 9999px;
+            padding: 0.45rem 1.25rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all .25s ease;
+        }
+
+            .nav-pill.active {
+                background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+                box-shadow: 0 0 20px rgba(99,102,241,0.35);
+            }
+
+            .nav-pill:not(.active):hover {
+                background: rgba(255,255,255,0.06);
+            }
 
         /* ── Section header ── */
         .section-title {
-            font-weight: 900; font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 900;
+            font-size: clamp(2rem, 5vw, 3.2rem);
             background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 40%, var(--accent-purple) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: -0.02em; line-height: 1.15;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
         }
 
         /* ── Feature cards ── */
         .feature-card {
-            position: relative; overflow: hidden; border-radius: 1.25rem;
+            position: relative;
+            overflow: hidden;
+            border-radius: 1.25rem;
             transition: transform .3s ease, box-shadow .3s ease;
         }
-        .feature-card::before {
-            content: ''; position: absolute; inset: 0; border-radius: inherit; opacity: 0;
-            background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(168,85,247,0.08));
-            transition: opacity .3s ease; pointer-events: none;
-        }
-        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.35); }
-        .feature-card:hover::before { opacity: 1; }
+
+            .feature-card::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                opacity: 0;
+                background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(168,85,247,0.08));
+                transition: opacity .3s ease;
+                pointer-events: none;
+            }
+
+            .feature-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+            }
+
+                .feature-card:hover::before {
+                    opacity: 1;
+                }
 
         /* ── Icon badge ── */
         .icon-badge {
-            width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem; flex-shrink: 0;
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
         }
 
         /* ── Concept grid ── */
         .concept-card {
-            border-radius: 1rem; padding: 1.25rem; position: relative;
+            border-radius: 1rem;
+            padding: 1.25rem;
+            position: relative;
             border: 1px solid var(--border-subtle);
             background: rgba(15, 23, 42, 0.6);
             transition: border-color .3s ease;
         }
-        .concept-card:hover { border-color: rgba(100,180,255,0.3); }
-        .concept-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+            .concept-card:hover {
+                border-color: rgba(100,180,255,0.3);
+            }
+
+        .concept-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
 
         /* ── Condition tag pills ── */
         .condition-pill {
-            display: inline-flex; align-items: center; gap: 0.35rem;
-            padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
         /* ── Medium selector tabs ── */
-        .medium-tabs { display: flex; gap: 0.35rem; flex-wrap: wrap; }
-        .medium-tab {
-            padding: 0.35rem 0.85rem; border-radius: 0.6rem; font-size: 0.78rem; font-weight: 500;
-            border: 1px solid var(--border-subtle); cursor: pointer; transition: all .2s ease;
-            background: rgba(15,23,42,0.5); color: var(--text-muted);
-        }
-        .medium-tab:hover { border-color: rgba(100,180,255,0.3); color: var(--text-primary); }
-        .medium-tab.active {
-            background: linear-gradient(135deg, rgba(34,211,238,0.15), rgba(59,130,246,0.15));
-            border-color: var(--accent-cyan); color: var(--accent-cyan);
+        .medium-tabs {
+            display: flex;
+            gap: 0.35rem;
+            flex-wrap: wrap;
         }
 
+        .medium-tab {
+            padding: 0.35rem 0.85rem;
+            border-radius: 0.6rem;
+            font-size: 0.78rem;
+            font-weight: 500;
+            border: 1px solid var(--border-subtle);
+            cursor: pointer;
+            transition: all .2s ease;
+            background: rgba(15,23,42,0.5);
+            color: var(--text-muted);
+        }
+
+            .medium-tab:hover {
+                border-color: rgba(100,180,255,0.3);
+                color: var(--text-primary);
+            }
+
+            .medium-tab.active {
+                background: linear-gradient(135deg, rgba(34,211,238,0.15), rgba(59,130,246,0.15));
+                border-color: var(--accent-cyan);
+                color: var(--accent-cyan);
+            }
+
         /* ── Slider ── */
-        input[type=range] { -webkit-appearance: none; background: transparent; width: 100%; }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%;
-            background: var(--accent-cyan); cursor: pointer;
-            box-shadow: 0 0 12px rgba(34,211,238,0.6); margin-top: -7px;
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+            width: 100%;
         }
-        input[type=range]::-webkit-slider-runnable-track {
-            height: 4px; cursor: pointer; border-radius: 2px;
-            background: rgba(34,211,238,0.2);
-        }
+
+            input[type=range]::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                height: 18px;
+                width: 18px;
+                border-radius: 50%;
+                background: var(--accent-cyan);
+                cursor: pointer;
+                box-shadow: 0 0 12px rgba(34,211,238,0.6);
+                margin-top: -7px;
+            }
+
+            input[type=range]::-webkit-slider-runnable-track {
+                height: 4px;
+                cursor: pointer;
+                border-radius: 2px;
+                background: rgba(34,211,238,0.2);
+            }
 
         /* ── Application pills ── */
         .app-pill {
-            display: inline-flex; align-items: center; gap: 0.3rem;
-            padding: 0.3rem 0.7rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 500;
-            border: 1px solid var(--border-subtle); background: rgba(15,23,42,0.6);
-            transition: all .2s ease; cursor: pointer; position: relative; z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            border: 1px solid var(--border-subtle);
+            background: rgba(15,23,42,0.6);
+            transition: all .2s ease;
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
         }
-        .app-pill:hover { border-color: rgba(100,180,255,0.25); background: rgba(34,211,238,0.06); transform: translateY(-1px); }
+
+            .app-pill:hover {
+                border-color: rgba(100,180,255,0.25);
+                background: rgba(34,211,238,0.06);
+                transform: translateY(-1px);
+            }
 
         /* ── Detail modal ── */
         .detail-overlay {
-            position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
-            background: rgba(2,4,12,0.85); backdrop-filter: blur(12px);
-            opacity: 0; pointer-events: none; transition: opacity .35s ease;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(2,4,12,0.85);
+            backdrop-filter: blur(12px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .35s ease;
         }
-        .detail-overlay.open { opacity: 1; pointer-events: auto; }
+
+            .detail-overlay.open {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
         .detail-panel {
-            width: 92vw; max-width: 780px; max-height: 88vh; overflow-y: auto;
-            border-radius: 1.5rem; padding: 2.5rem;
+            width: 92vw;
+            max-width: 780px;
+            max-height: 88vh;
+            overflow-y: auto;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
             background: linear-gradient(160deg, rgba(12,18,40,0.97), rgba(8,12,28,0.98));
             border: 1px solid rgba(100,160,255,0.12);
             box-shadow: 0 32px 80px rgba(0,0,0,0.6);
-            transform: translateY(30px) scale(0.97); transition: transform .35s cubic-bezier(.16,1,.3,1);
+            transform: translateY(30px) scale(0.97);
+            transition: transform .35s cubic-bezier(.16,1,.3,1);
         }
-        .detail-overlay.open .detail-panel { transform: translateY(0) scale(1); }
-        .detail-panel::-webkit-scrollbar { width: 6px; }
-        .detail-panel::-webkit-scrollbar-thumb { background: rgba(100,160,255,0.2); border-radius: 3px; }
+
+        .detail-overlay.open .detail-panel {
+            transform: translateY(0) scale(1);
+        }
+
+        .detail-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .detail-panel::-webkit-scrollbar-thumb {
+            background: rgba(100,160,255,0.2);
+            border-radius: 3px;
+        }
+
         .detail-back {
-            display: inline-flex; align-items: center; gap: .4rem; font-size: .82rem; font-weight: 500;
-            color: var(--text-muted); cursor: pointer; transition: color .2s; margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .82rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color .2s;
+            margin-bottom: 1.5rem;
         }
-        .detail-back:hover { color: var(--accent-cyan); }
+
+            .detail-back:hover {
+                color: var(--accent-cyan);
+            }
+
         .detail-diagram {
-            border-radius: 1rem; overflow: hidden; margin: 1.5rem 0;
-            border: 1px solid var(--border-subtle); background: #080c1a;
+            border-radius: 1rem;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border-subtle);
+            background: #080c1a;
         }
-        .detail-diagram svg { display: block; width: 100%; height: auto; }
+
+            .detail-diagram svg {
+                display: block;
+                width: 100%;
+                height: auto;
+            }
+
         .detail-keypoint {
-            display: flex; gap: .75rem; padding: .85rem 1rem; border-radius: .75rem; margin-bottom: .5rem;
-            background: rgba(15,23,42,0.5); border: 1px solid var(--border-subtle);
+            display: flex;
+            gap: .75rem;
+            padding: .85rem 1rem;
+            border-radius: .75rem;
+            margin-bottom: .5rem;
+            background: rgba(15,23,42,0.5);
+            border: 1px solid var(--border-subtle);
         }
-        .detail-keypoint .kp-num {
-            width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            font-size: .7rem; font-weight: 700;
-        }
+
+            .detail-keypoint .kp-num {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: .7rem;
+                font-weight: 700;
+            }
 
         /* ── Status badge ── */
         .status-badge {
-            padding: 0.35rem 0.9rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 700;
+            padding: 0.35rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 700;
             backdrop-filter: blur(8px);
         }
 
         /* ── Animations ── */
-        @keyframes pulse-ray { 0%,100%{opacity:.8;stroke-width:2} 50%{opacity:1;stroke-width:3} }
-        .ray-animate { animation: pulse-ray 2s ease-in-out infinite; }
-        @keyframes correct-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
-        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
-        @keyframes star-pop { 0%{transform:scale(0) rotate(0)} 50%{transform:scale(1.4) rotate(180deg)} 100%{transform:scale(1) rotate(360deg)} }
-        @keyframes float-up { 0%{transform:translateY(0) scale(1);opacity:1} 100%{transform:translateY(-100px) scale(0);opacity:0} }
-        .particle { position:absolute; pointer-events:none; animation: float-up 3s ease-out forwards; }
+        @keyframes pulse-ray {
+            0%,100% {
+                opacity: .8;
+                stroke-width: 2
+            }
 
-        .option-card { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
-        .option-card:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-        .option-card.selected { border-color: #3b82f6; background: rgba(59,130,246,0.1); box-shadow: 0 0 0 3px rgba(59,130,246,0.3); }
-        .option-card.correct { border-color: #10b981; background: rgba(16,185,129,0.1); animation: correct-pulse 0.5s ease; }
-        .option-card.wrong { border-color: #ef4444; background: rgba(239,68,68,0.1); animation: shake 0.5s ease; }
+            50% {
+                opacity: 1;
+                stroke-width: 3
+            }
+        }
+
+        .ray-animate {
+            animation: pulse-ray 2s ease-in-out infinite;
+        }
+
+        @keyframes correct-pulse {
+            0%,100% {
+                transform: scale(1)
+            }
+
+            50% {
+                transform: scale(1.05)
+            }
+        }
+
+        @keyframes shake {
+            0%,100% {
+                transform: translateX(0)
+            }
+
+            25% {
+                transform: translateX(-10px)
+            }
+
+            75% {
+                transform: translateX(10px)
+            }
+        }
+
+        @keyframes star-pop {
+            0% {
+                transform: scale(0) rotate(0)
+            }
+
+            50% {
+                transform: scale(1.4) rotate(180deg)
+            }
+
+            100% {
+                transform: scale(1) rotate(360deg)
+            }
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1
+            }
+
+            100% {
+                transform: translateY(-100px) scale(0);
+                opacity: 0
+            }
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: float-up 3s ease-out forwards;
+        }
+
+        .option-card {
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+
+            .option-card:hover {
+                transform: translateY(-2px) scale(1.02);
+                box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            }
+
+            .option-card.selected {
+                border-color: #3b82f6;
+                background: rgba(59,130,246,0.1);
+                box-shadow: 0 0 0 3px rgba(59,130,246,0.3);
+            }
+
+            .option-card.correct {
+                border-color: #10b981;
+                background: rgba(16,185,129,0.1);
+                animation: correct-pulse 0.5s ease;
+            }
+
+            .option-card.wrong {
+                border-color: #ef4444;
+                background: rgba(239,68,68,0.1);
+                animation: shake 0.5s ease;
+            }
+
         .star {
             color: #64748b !important;
             transition: transform 0.3s ease, color 0.3s ease;
@@ -291,16 +727,48 @@
             body.light-theme .star.active-star {
                 color: #fbbf24 !important;
             }
-        .star.earned { animation: star-pop 0.5s ease; }
-        .progress-fill { transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
-        #gameCanvas { cursor: crosshair; touch-action: none; }
+
+        .star.earned {
+            animation: star-pop 0.5s ease;
+        }
+
+        .progress-fill {
+            transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        #gameCanvas {
+            cursor: crosshair;
+            touch-action: none;
+        }
 
         /* ── Fade-in ── */
-        @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
-        .fade-up { animation: fadeUp .5s ease both; }
-        .fade-up-d1 { animation-delay: .08s; }
-        .fade-up-d2 { animation-delay: .16s; }
-        .fade-up-d3 { animation-delay: .24s; }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-up {
+            animation: fadeUp .5s ease both;
+        }
+
+        .fade-up-d1 {
+            animation-delay: .08s;
+        }
+
+        .fade-up-d2 {
+            animation-delay: .16s;
+        }
+
+        .fade-up-d3 {
+            animation-delay: .24s;
+        }
 
         /* ========== Responsive layout ========== */
         .nav-shell {
@@ -611,7 +1079,7 @@
                             <div class="glass rounded-xl p-4" style="border:1px solid var(--border-subtle);">
                                 <div class="flex items-center gap-4">
                                     <span class="text-xs font-semibold uppercase tracking-wide" style="color:var(--text-muted); white-space:nowrap;">入射角</span>
-                                    <input type="range" id="angleSlider" min="0" max="90" value="30" class="flex-1">
+                                    <input type="range" id="angleSlider" min="0" max="90" step="0.001" value="30" class="flex-1">
                                     <span id="angleDisplay" class="font-bold text-lg w-14 text-right" style="color:var(--accent-cyan);">30°</span>
                                 </div>
                                 <div class="flex justify-between text-xs mt-1.5" style="color:var(--text-muted);">
@@ -853,34 +1321,34 @@
                 color: '#22d3ee',
                 intro: '光纤通信是全反射最重要的技术应用之一。一根细如发丝的玻璃纤维，可以同时传输数百万路电话或数千路视频信号，承载了全球超过 95% 的洲际通信数据。',
                 svg: `<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="fiberCore" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1e3a5f"/><stop offset="100%" stop-color="#1e3a5f"/></linearGradient>
-                        <linearGradient id="fiberClad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0c1a30"/><stop offset="100%" stop-color="#0c1a30"/></linearGradient>
-                        <filter id="glow1"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                    </defs>
-                    <!-- Cladding -->
-                    <rect x="60" y="80" width="580" height="160" rx="80" fill="#0a1628" stroke="#1e3a5f" stroke-width="2"/>
-                    <!-- Core -->
-                    <rect x="60" y="120" width="580" height="80" rx="40" fill="#0f2240" stroke="#22d3ee" stroke-width="1" opacity="0.4"/>
-                    <!-- Light path bouncing -->
-                    <polyline points="90,160 170,130 280,170 390,130 500,170 580,140 620,160" fill="none" stroke="#22d3ee" stroke-width="2.5" filter="url(#glow1)" stroke-linejoin="round"/>
-                    <!-- Bounce points -->
-                    <circle cx="170" cy="130" r="4" fill="#22d3ee" opacity="0.8"/><circle cx="280" cy="170" r="4" fill="#22d3ee" opacity="0.8"/>
-                    <circle cx="390" cy="130" r="4" fill="#22d3ee" opacity="0.8"/><circle cx="500" cy="170" r="4" fill="#22d3ee" opacity="0.8"/>
-                    <!-- Laser source -->
-                    <rect x="20" y="145" width="45" height="30" rx="4" fill="#ef4444" opacity="0.8"/><text x="28" y="164" fill="white" font-size="9" font-weight="bold">激光</text>
-                    <!-- Receiver -->
-                    <rect x="635" y="145" width="45" height="30" rx="4" fill="#22c55e" opacity="0.8"/><text x="641" y="164" fill="white" font-size="9" font-weight="bold">接收</text>
-                    <!-- Labels -->
-                    <text x="350" y="110" fill="#94a3b8" font-size="11" text-anchor="middle">包层 (n ≈ 1.46)</text>
-                    <text x="350" y="165" fill="#22d3ee" font-size="11" text-anchor="middle" opacity="0.7">纤芯 (n ≈ 1.48)</text>
-                    <text x="350" y="270" fill="#64748b" font-size="11" text-anchor="middle">光在纤芯与包层界面不断全反射，沿光纤前进</text>
-                    <!-- Angle indicator -->
-                    <line x1="170" y1="130" x2="170" y2="100" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,2" opacity="0.6"/>
-                    <path d="M170,118 A12,12 0 0,1 180,127" fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.8"/>
-                    <text x="183" y="120" fill="#f59e0b" font-size="9">θ</text>
-                    <text x="350" y="292" fill="#f59e0b" font-size="10" text-anchor="middle">θ &gt; 临界角 → 全反射 → 信号无损传输</text>
-                </svg>`,
+                        <defs>
+                            <linearGradient id="fiberCore" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1e3a5f"/><stop offset="100%" stop-color="#1e3a5f"/></linearGradient>
+                            <linearGradient id="fiberClad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0c1a30"/><stop offset="100%" stop-color="#0c1a30"/></linearGradient>
+                            <filter id="glow1"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                        </defs>
+                        <!-- Cladding -->
+                        <rect x="60" y="80" width="580" height="160" rx="80" fill="#0a1628" stroke="#1e3a5f" stroke-width="2"/>
+                        <!-- Core -->
+                        <rect x="60" y="120" width="580" height="80" rx="40" fill="#0f2240" stroke="#22d3ee" stroke-width="1" opacity="0.4"/>
+                        <!-- Light path bouncing -->
+                        <polyline points="90,160 170,130 280,170 390,130 500,170 580,140 620,160" fill="none" stroke="#22d3ee" stroke-width="2.5" filter="url(#glow1)" stroke-linejoin="round"/>
+                        <!-- Bounce points -->
+                        <circle cx="170" cy="130" r="4" fill="#22d3ee" opacity="0.8"/><circle cx="280" cy="170" r="4" fill="#22d3ee" opacity="0.8"/>
+                        <circle cx="390" cy="130" r="4" fill="#22d3ee" opacity="0.8"/><circle cx="500" cy="170" r="4" fill="#22d3ee" opacity="0.8"/>
+                        <!-- Laser source -->
+                        <rect x="20" y="145" width="45" height="30" rx="4" fill="#ef4444" opacity="0.8"/><text x="28" y="164" fill="white" font-size="9" font-weight="bold">激光</text>
+                        <!-- Receiver -->
+                        <rect x="635" y="145" width="45" height="30" rx="4" fill="#22c55e" opacity="0.8"/><text x="641" y="164" fill="white" font-size="9" font-weight="bold">接收</text>
+                        <!-- Labels -->
+                        <text x="350" y="110" fill="#94a3b8" font-size="11" text-anchor="middle">包层 (n ≈ 1.46)</text>
+                        <text x="350" y="165" fill="#22d3ee" font-size="11" text-anchor="middle" opacity="0.7">纤芯 (n ≈ 1.48)</text>
+                        <text x="350" y="270" fill="#64748b" font-size="11" text-anchor="middle">光在纤芯与包层界面不断全反射，沿光纤前进</text>
+                        <!-- Angle indicator -->
+                        <line x1="170" y1="130" x2="170" y2="100" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,2" opacity="0.6"/>
+                        <path d="M170,118 A12,12 0 0,1 180,127" fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.8"/>
+                        <text x="183" y="120" fill="#f59e0b" font-size="9">θ</text>
+                        <text x="350" y="292" fill="#f59e0b" font-size="10" text-anchor="middle">θ &gt; 临界角 → 全反射 → 信号无损传输</text>
+                    </svg>`,
                 points: [
                     { label: '结构', text: '光纤由折射率较高的纤芯（n≈1.48）和折射率略低的包层（n≈1.46）组成。光在纤芯中传播时，遇到纤芯-包层界面就发生全反射。' },
                     { label: '原理', text: '只要光线与界面的入射角大于临界角（约 8.5°），光就会被完全反射回纤芯。这样光信号可以沿着弯曲的光纤传输数百公里几乎无损耗。' },
@@ -892,36 +1360,36 @@
                 color: '#c084fc',
                 intro: '钻石之所以被称为"宝石之王"，很大程度上要归功于全反射。钻石的折射率高达 2.42，这使得它拥有极小的临界角，大量光线在钻石内部被"困住"，产生璀璨的火彩。',
                 svg: `<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="diamGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2d1b69" stop-opacity="0.5"/><stop offset="100%" stop-color="#1a0a3e" stop-opacity="0.8"/></linearGradient>
-                        <filter id="glow2"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                    </defs>
-                    <!-- Diamond shape -->
-                    <polygon points="350,40 450,120 420,260 280,260 250,120" fill="url(#diamGrad)" stroke="#c084fc" stroke-width="2"/>
-                    <!-- Facet lines -->
-                    <line x1="350" y1="40" x2="320" y2="260" stroke="#c084fc" stroke-width="0.5" opacity="0.3"/>
-                    <line x1="350" y1="40" x2="380" y2="260" stroke="#c084fc" stroke-width="0.5" opacity="0.3"/>
-                    <line x1="250" y1="120" x2="450" y2="120" stroke="#c084fc" stroke-width="0.5" opacity="0.3"/>
-                    <!-- Light enters -->
-                    <line x1="280" y1="10" x2="340" y2="80" stroke="#fbbf24" stroke-width="2" filter="url(#glow2)"/>
-                    <!-- Internal reflections -->
-                    <polyline points="340,80 420,170 310,200 390,240 350,260" fill="none" stroke="#c084fc" stroke-width="2" filter="url(#glow2)" stroke-linejoin="round"/>
-                    <!-- Light exits with dispersion -->
-                    <line x1="350" y1="260" x2="310" y2="300" stroke="#ef4444" stroke-width="1.5" opacity="0.8"/>
-                    <line x1="350" y1="260" x2="340" y2="305" stroke="#f59e0b" stroke-width="1.5" opacity="0.8"/>
-                    <line x1="350" y1="260" x2="360" y2="305" stroke="#22c55e" stroke-width="1.5" opacity="0.8"/>
-                    <line x1="350" y1="260" x2="390" y2="300" stroke="#3b82f6" stroke-width="1.5" opacity="0.8"/>
-                    <!-- Bounce dots -->
-                    <circle cx="420" cy="170" r="3" fill="#c084fc" opacity="0.9"/>
-                    <circle cx="310" cy="200" r="3" fill="#c084fc" opacity="0.9"/>
-                    <circle cx="390" cy="240" r="3" fill="#c084fc" opacity="0.9"/>
-                    <!-- Labels -->
-                    <text x="500" y="80" fill="#c084fc" font-size="12" opacity="0.8">入射光</text>
-                    <text x="490" y="170" fill="#94a3b8" font-size="11">临界角 ≈ 24.4°</text>
-                    <text x="490" y="190" fill="#94a3b8" font-size="11">（极小 → 大量全反射）</text>
-                    <text x="420" y="300" fill="#94a3b8" font-size="11">色散出射 → 火彩</text>
-                    <text x="130" y="160" fill="#fbbf24" font-size="11">白光入射 →</text>
-                </svg>`,
+                        <defs>
+                            <linearGradient id="diamGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2d1b69" stop-opacity="0.5"/><stop offset="100%" stop-color="#1a0a3e" stop-opacity="0.8"/></linearGradient>
+                            <filter id="glow2"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                        </defs>
+                        <!-- Diamond shape -->
+                        <polygon points="350,40 450,120 420,260 280,260 250,120" fill="url(#diamGrad)" stroke="#c084fc" stroke-width="2"/>
+                        <!-- Facet lines -->
+                        <line x1="350" y1="40" x2="320" y2="260" stroke="#c084fc" stroke-width="0.5" opacity="0.3"/>
+                        <line x1="350" y1="40" x2="380" y2="260" stroke="#c084fc" stroke-width="0.5" opacity="0.3"/>
+                        <line x1="250" y1="120" x2="450" y2="120" stroke="#c084fc" stroke-width="0.5" opacity="0.3"/>
+                        <!-- Light enters -->
+                        <line x1="280" y1="10" x2="340" y2="80" stroke="#fbbf24" stroke-width="2" filter="url(#glow2)"/>
+                        <!-- Internal reflections -->
+                        <polyline points="340,80 420,170 310,200 390,240 350,260" fill="none" stroke="#c084fc" stroke-width="2" filter="url(#glow2)" stroke-linejoin="round"/>
+                        <!-- Light exits with dispersion -->
+                        <line x1="350" y1="260" x2="310" y2="300" stroke="#ef4444" stroke-width="1.5" opacity="0.8"/>
+                        <line x1="350" y1="260" x2="340" y2="305" stroke="#f59e0b" stroke-width="1.5" opacity="0.8"/>
+                        <line x1="350" y1="260" x2="360" y2="305" stroke="#22c55e" stroke-width="1.5" opacity="0.8"/>
+                        <line x1="350" y1="260" x2="390" y2="300" stroke="#3b82f6" stroke-width="1.5" opacity="0.8"/>
+                        <!-- Bounce dots -->
+                        <circle cx="420" cy="170" r="3" fill="#c084fc" opacity="0.9"/>
+                        <circle cx="310" cy="200" r="3" fill="#c084fc" opacity="0.9"/>
+                        <circle cx="390" cy="240" r="3" fill="#c084fc" opacity="0.9"/>
+                        <!-- Labels -->
+                        <text x="500" y="80" fill="#c084fc" font-size="12" opacity="0.8">入射光</text>
+                        <text x="490" y="170" fill="#94a3b8" font-size="11">临界角 ≈ 24.4°</text>
+                        <text x="490" y="190" fill="#94a3b8" font-size="11">（极小 → 大量全反射）</text>
+                        <text x="420" y="300" fill="#94a3b8" font-size="11">色散出射 → 火彩</text>
+                        <text x="130" y="160" fill="#fbbf24" font-size="11">白光入射 →</text>
+                    </svg>`,
                 points: [
                     { label: '临界角极小', text: '钻石折射率 2.42，临界角仅约 24.4°。这意味着光线在钻石内部几乎任何角度都无法逃出，会被反复全反射。' },
                     { label: '切割工艺', text: '珠宝匠精心计算切割面角度（如标准明亮切割 57 面），使光线在内部经过多次全反射后从顶部射出，最大化视觉亮度。' },
@@ -944,42 +1412,42 @@
                 color: '#10b981',
                 intro: '医用内窥镜利用全反射原理，将成千上万根极细的光纤捆成光导束。光通过光纤照亮体内腔道，同时另一束光纤将体内图像传回外部，让医生无需开刀就能观察和诊断。',
                 svg: `<svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <filter id="glow4"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                    </defs>
-                    <!-- Endoscope body -->
-                    <path d="M80,140 L400,140 Q500,140 520,180 Q540,220 560,220 L650,220" fill="none" stroke="#10b981" stroke-width="16" stroke-linecap="round" opacity="0.2"/>
-                    <path d="M80,140 L400,140 Q500,140 520,180 Q540,220 560,220 L650,220" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round"/>
-                    <!-- Light fiber (illumination) -->
-                    <path d="M80,134 L400,134 Q498,134 518,174 Q538,214 558,214 L648,214" fill="none" stroke="#fbbf24" stroke-width="1.5" filter="url(#glow4)" opacity="0.7"/>
-                    <!-- Image fiber -->
-                    <path d="M80,146 L400,146 Q502,146 522,186 Q542,226 562,226 L648,226" fill="none" stroke="#22d3ee" stroke-width="1.5" filter="url(#glow4)" opacity="0.7"/>
-                    <!-- Light source -->
-                    <rect x="30" y="120" width="55" height="40" rx="6" fill="#1e293b" stroke="#fbbf24" stroke-width="1.5"/>
-                    <text x="38" y="144" fill="#fbbf24" font-size="9" font-weight="bold">光源</text>
-                    <!-- Camera/eyepiece -->
-                    <rect x="30" y="165" width="55" height="30" rx="6" fill="#1e293b" stroke="#22d3ee" stroke-width="1.5"/>
-                    <text x="36" y="184" fill="#22d3ee" font-size="9" font-weight="bold">成像</text>
-                    <!-- Tip detail -->
-                    <circle cx="650" cy="220" r="12" fill="#10b981" opacity="0.2" stroke="#10b981" stroke-width="1.5"/>
-                    <circle cx="650" cy="220" r="3" fill="#fbbf24" opacity="0.8"/>
-                    <!-- Labels -->
-                    <text x="220" y="125" fill="#fbbf24" font-size="10" opacity="0.7">照明光纤 — 全反射传光</text>
-                    <text x="220" y="175" fill="#22d3ee" font-size="10" opacity="0.7">成像光纤 — 全反射传像</text>
-                    <text x="560" y="200" fill="#10b981" font-size="10">镜头端</text>
-                    <!-- Magnified fiber cross-section -->
-                    <circle cx="580" cy="90" r="45" fill="#0a1628" stroke="#334155" stroke-width="1"/>
-                    <text x="560" y="55" fill="#94a3b8" font-size="9">光纤束截面</text>
-                    <circle cx="568" cy="78" r="5" fill="#1e3a5f" stroke="#22d3ee" stroke-width="0.5" opacity="0.6"/>
-                    <circle cx="580" cy="78" r="5" fill="#1e3a5f" stroke="#22d3ee" stroke-width="0.5" opacity="0.6"/>
-                    <circle cx="592" cy="78" r="5" fill="#1e3a5f" stroke="#22d3ee" stroke-width="0.5" opacity="0.6"/>
-                    <circle cx="574" cy="90" r="5" fill="#1e3a5f" stroke="#fbbf24" stroke-width="0.5" opacity="0.6"/>
-                    <circle cx="586" cy="90" r="5" fill="#1e3a5f" stroke="#fbbf24" stroke-width="0.5" opacity="0.6"/>
-                    <circle cx="568" cy="102" r="5" fill="#1e3a5f" stroke="#22d3ee" stroke-width="0.5" opacity="0.6"/>
-                    <circle cx="580" cy="102" r="5" fill="#1e3a5f" stroke="#fbbf24" stroke-width="0.5" opacity="0.6"/>
-                    <circle cx="592" cy="102" r="5" fill="#1e3a5f" stroke="#22d3ee" stroke-width="0.5" opacity="0.6"/>
-                    <text x="540" y="148" fill="#64748b" font-size="9">每根光纤独立全反射</text>
-                </svg>`,
+                        <defs>
+                            <filter id="glow4"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                        </defs>
+                        <!-- Endoscope body -->
+                        <path d="M80,140 L400,140 Q500,140 520,180 Q540,220 560,220 L650,220" fill="none" stroke="#10b981" stroke-width="16" stroke-linecap="round" opacity="0.2"/>
+                        <path d="M80,140 L400,140 Q500,140 520,180 Q540,220 560,220 L650,220" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round"/>
+                        <!-- Light fiber (illumination) -->
+                        <path d="M80,134 L400,134 Q498,134 518,174 Q538,214 558,214 L648,214" fill="none" stroke="#fbbf24" stroke-width="1.5" filter="url(#glow4)" opacity="0.7"/>
+                        <!-- Image fiber -->
+                        <path d="M80,146 L400,146 Q502,146 522,186 Q542,226 562,226 L648,226" fill="none" stroke="#22d3ee" stroke-width="1.5" filter="url(#glow4)" opacity="0.7"/>
+                        <!-- Light source -->
+                        <rect x="30" y="120" width="55" height="40" rx="6" fill="#1e293b" stroke="#fbbf24" stroke-width="1.5"/>
+                        <text x="38" y="144" fill="#fbbf24" font-size="9" font-weight="bold">光源</text>
+                        <!-- Camera/eyepiece -->
+                        <rect x="30" y="165" width="55" height="30" rx="6" fill="#1e293b" stroke="#22d3ee" stroke-width="1.5"/>
+                        <text x="36" y="184" fill="#22d3ee" font-size="9" font-weight="bold">成像</text>
+                        <!-- Tip detail -->
+                        <circle cx="650" cy="220" r="12" fill="#10b981" opacity="0.2" stroke="#10b981" stroke-width="1.5"/>
+                        <circle cx="650" cy="220" r="3" fill="#fbbf24" opacity="0.8"/>
+                        <!-- Labels -->
+                        <text x="220" y="125" fill="#fbbf24" font-size="10" opacity="0.7">照明光纤 — 全反射传光</text>
+                        <text x="220" y="175" fill="#22d3ee" font-size="10" opacity="0.7">成像光纤 — 全反射传像</text>
+                        <text x="560" y="200" fill="#10b981" font-size="10">镜头端</text>
+                        <!-- Magnified fiber cross-section -->
+                        <circle cx="580" cy="90" r="45" fill="#0a1628" stroke="#334155" stroke-width="1"/>
+                        <text x="560" y="55" fill="#94a3b8" font-size="9">光纤束截面</text>
+                        <circle cx="568" cy="78" r="5" fill="#1e3a5f" stroke="#22d3ee" stroke-width="0.5" opacity="0.6"/>
+                        <circle cx="580" cy="78" r="5" fill="#1e3a5f" stroke="#22d3ee" stroke-width="0.5" opacity="0.6"/>
+                        <circle cx="592" cy="78" r="5" fill="#1e3a5f" stroke="#22d3ee" stroke-width="0.5" opacity="0.6"/>
+                        <circle cx="574" cy="90" r="5" fill="#1e3a5f" stroke="#fbbf24" stroke-width="0.5" opacity="0.6"/>
+                        <circle cx="586" cy="90" r="5" fill="#1e3a5f" stroke="#fbbf24" stroke-width="0.5" opacity="0.6"/>
+                        <circle cx="568" cy="102" r="5" fill="#1e3a5f" stroke="#22d3ee" stroke-width="0.5" opacity="0.6"/>
+                        <circle cx="580" cy="102" r="5" fill="#1e3a5f" stroke="#fbbf24" stroke-width="0.5" opacity="0.6"/>
+                        <circle cx="592" cy="102" r="5" fill="#1e3a5f" stroke="#22d3ee" stroke-width="0.5" opacity="0.6"/>
+                        <text x="540" y="148" fill="#64748b" font-size="9">每根光纤独立全反射</text>
+                    </svg>`,
                 points: [
                     { label: '双路光纤', text: '内窥镜包含两组光纤束：一组负责从外部光源将光送入体内照明，另一组负责把体内影像通过全反射逐根传回，在外部还原出完整图像。' },
                     { label: '全反射传像', text: '每根成像光纤只传输一个像素点的信息。成千上万根排列整齐的光纤组成一幅完整的图像，光在每根纤维中独立发生全反射传输。' },
@@ -1015,26 +1483,26 @@
             if (!d) return;
             const panel = document.getElementById('detailPanel');
             let html = `
-                <div class="detail-back" onclick="closeDetail()">← 返回知识讲解</div>
-                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;">
-                    <div style="width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.7rem;background:rgba(${hexToRgb(d.color)},0.12);border:1px solid rgba(${hexToRgb(d.color)},0.25);">${d.icon}</div>
-                    <div>
-                        <h2 style="font-size:1.5rem;font-weight:800;color:${d.color};margin:0;line-height:1.2;">${d.title}</h2>
-                        <span style="font-size:.75rem;color:var(--text-muted);letter-spacing:.04em;">${d.subtitle}</span>
+                    <div class="detail-back" onclick="closeDetail()">← 返回知识讲解</div>
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;">
+                        <div style="width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.7rem;background:rgba(${hexToRgb(d.color)},0.12);border:1px solid rgba(${hexToRgb(d.color)},0.25);">${d.icon}</div>
+                        <div>
+                            <h2 style="font-size:1.5rem;font-weight:800;color:${d.color};margin:0;line-height:1.2;">${d.title}</h2>
+                            <span style="font-size:.75rem;color:var(--text-muted);letter-spacing:.04em;">${d.subtitle}</span>
+                        </div>
                     </div>
-                </div>
-                <p style="font-size:.9rem;line-height:1.75;color:var(--text-muted);margin-bottom:0;">${d.intro}</p>
-                <div class="detail-diagram">${d.svg}</div>
-                <h3 style="font-size:.95rem;font-weight:700;margin:1.5rem 0 .75rem;color:var(--text-primary);">原理要点</h3>
-            `;
+                    <p style="font-size:.9rem;line-height:1.75;color:var(--text-muted);margin-bottom:0;">${d.intro}</p>
+                    <div class="detail-diagram">${d.svg}</div>
+                    <h3 style="font-size:.95rem;font-weight:700;margin:1.5rem 0 .75rem;color:var(--text-primary);">原理要点</h3>
+                `;
             d.points.forEach((p, i) => {
                 html += `<div class="detail-keypoint">
-                    <div class="kp-num" style="background:rgba(${hexToRgb(d.color)},0.15);color:${d.color};">${i + 1}</div>
-                    <div>
-                        <div style="font-size:.78rem;font-weight:700;color:${d.color};margin-bottom:.2rem;">${p.label}</div>
-                        <div style="font-size:.84rem;line-height:1.65;color:var(--text-muted);">${p.text}</div>
-                    </div>
-                </div>`;
+                        <div class="kp-num" style="background:rgba(${hexToRgb(d.color)},0.15);color:${d.color};">${i + 1}</div>
+                        <div>
+                            <div style="font-size:.78rem;font-weight:700;color:${d.color};margin-bottom:.2rem;">${p.label}</div>
+                            <div style="font-size:.84rem;line-height:1.65;color:var(--text-muted);">${p.text}</div>
+                        </div>
+                    </div>`;
             });
             panel.innerHTML = html;
             panel.scrollTop = 0;
@@ -1051,16 +1519,16 @@
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
 
         function hexToRgb(hex) {
-            const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+            const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
             return `${r},${g},${b}`;
         }
         const mediaPairs = [
-            { id: 'water-air',   label: '水 → 空气',       n1: 1.33,  n2: 1.0,  name1: '水',   name2: '空气',   color1: 'rgba(30,70,120,0.45)', color2: 'rgba(15,23,42,0.3)' },
-            { id: 'glass-air',   label: '玻璃 → 空气',     n1: 1.50,  n2: 1.0,  name1: '玻璃', name2: '空气',   color1: 'rgba(60,60,100,0.45)', color2: 'rgba(15,23,42,0.3)' },
-            { id: 'diamond-air', label: '钻石 → 空气',     n1: 2.42,  n2: 1.0,  name1: '钻石', name2: '空气',   color1: 'rgba(80,60,100,0.45)', color2: 'rgba(15,23,42,0.3)' },
-            { id: 'glass-water', label: '玻璃 → 水',       n1: 1.50,  n2: 1.33, name1: '玻璃', name2: '水',     color1: 'rgba(60,60,100,0.45)', color2: 'rgba(30,70,120,0.45)' },
-            { id: 'diamond-glass',label: '钻石 → 玻璃',    n1: 2.42,  n2: 1.50, name1: '钻石', name2: '玻璃',   color1: 'rgba(80,60,100,0.45)', color2: 'rgba(60,60,100,0.45)' },
-            { id: 'diamond-water',label: '钻石 → 水',      n1: 2.42,  n2: 1.33, name1: '钻石', name2: '水',     color1: 'rgba(80,60,100,0.45)', color2: 'rgba(30,70,120,0.45)' },
+            { id: 'water-air', label: '水 → 空气', n1: 1.33, n2: 1.0, name1: '水', name2: '空气', color1: 'rgba(30,70,120,0.45)', color2: 'rgba(15,23,42,0.3)' },
+            { id: 'glass-air', label: '玻璃 → 空气', n1: 1.50, n2: 1.0, name1: '玻璃', name2: '空气', color1: 'rgba(60,60,100,0.45)', color2: 'rgba(15,23,42,0.3)' },
+            { id: 'diamond-air', label: '钻石 → 空气', n1: 2.42, n2: 1.0, name1: '钻石', name2: '空气', color1: 'rgba(80,60,100,0.45)', color2: 'rgba(15,23,42,0.3)' },
+            { id: 'glass-water', label: '玻璃 → 水', n1: 1.50, n2: 1.33, name1: '玻璃', name2: '水', color1: 'rgba(60,60,100,0.45)', color2: 'rgba(30,70,120,0.45)' },
+            { id: 'diamond-glass', label: '钻石 → 玻璃', n1: 2.42, n2: 1.50, name1: '钻石', name2: '玻璃', color1: 'rgba(80,60,100,0.45)', color2: 'rgba(60,60,100,0.45)' },
+            { id: 'diamond-water', label: '钻石 → 水', n1: 2.42, n2: 1.33, name1: '钻石', name2: '水', color1: 'rgba(80,60,100,0.45)', color2: 'rgba(30,70,120,0.45)' },
         ];
 
         let currentMediumIdx = 0;
@@ -1204,7 +1672,14 @@
             } else {
                 // Refraction
                 const sinR = (n1 / n2) * Math.sin(angleRad);
-                const refractAngle = Math.asin(Math.min(sinR, 1));
+
+                // 临界角附近直接吸附到 90°，保证折射光先变水平再消失
+                let refractAngle;
+                if (Math.abs(currentAngle - ca) < 0.2) {
+                    refractAngle = Math.PI / 2;
+                } else {
+                    refractAngle = Math.asin(Math.min(sinR, 1));
+                }
                 const refractDeg = refractAngle * 180 / Math.PI;
                 const rfx = cx + rayLen * Math.sin(refractAngle);
                 const rfy = cy - rayLen * Math.cos(refractAngle);
@@ -1240,11 +1715,11 @@
         function setAngle(angle) {
             currentAngle = Math.min(90, Math.max(0, typeof angle === 'function' ? angle() : angle));
             document.getElementById('angleSlider').value = currentAngle;
-            document.getElementById('angleDisplay').textContent = currentAngle.toFixed(1) + '°';
+            document.getElementById('angleDisplay').textContent = currentAngle.toFixed(3) + '°';
             drawDemo();
         }
 
-        document.getElementById('angleSlider').addEventListener('input', function(e) { setAngle(parseFloat(e.target.value)); });
+        document.getElementById('angleSlider').addEventListener('input', function (e) { setAngle(parseFloat(e.target.value)); });
 
         /* ═══════════ QUIZ (UNCHANGED) ═══════════ */
         const questions = {
@@ -1308,7 +1783,7 @@
             let html = `<div class="glass rounded-3xl p-8"><div class="flex items-center gap-3 mb-6"><span class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg">${currentQuestion + 1}</span><span class="text-sm" style="color:var(--text-muted);">题目 ${currentQuestion + 1}/${currentQuestions.length}</span></div><h3 class="text-xl font-bold mb-6 leading-relaxed">${q.question}</h3>`;
             if (q.visual) html += `<div class="quiz-visual-box rounded-xl p-4 mb-6 h-48 flex items-center justify-center"><canvas id="q${currentQuestion}Canvas" width="300" height="150"></canvas></div>`;
             html += `<div class="grid gap-3 mb-6">`;
-            q.options.forEach((opt, idx) => { html += `<button onclick="selectOption(${idx})" id="opt${idx}" class="option-card w-full text-left p-4 rounded-xl border-2 quiz-option-border transition group"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full quiz-badge-bg flex items-center justify-center text-sm font-bold group-hover:bg-blue-600 group-hover:text-white transition" id="badge${idx}">${String.fromCharCode(65+idx)}</div><span class="quiz-option-text">${opt}</span></div></button>`; });
+            q.options.forEach((opt, idx) => { html += `<button onclick="selectOption(${idx})" id="opt${idx}" class="option-card w-full text-left p-4 rounded-xl border-2 quiz-option-border transition group"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full quiz-badge-bg flex items-center justify-center text-sm font-bold group-hover:bg-blue-600 group-hover:text-white transition" id="badge${idx}">${String.fromCharCode(65 + idx)}</div><span class="quiz-option-text">${opt}</span></div></button>`; });
             html += `</div><div id="explanationBox" class="hidden quiz-explanation rounded-xl p-4 mb-4 border-l-4 border-blue-500"><p class="text-sm" style="color:var(--text-muted);">${q.explanation}</p></div><div class="flex justify-between items-center"><button onclick="submitAnswer(event)" id="submitBtn" class="px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white transition font-bold disabled:opacity-50 disabled:cursor-not-allowed" disabled>提交答案</button><button onclick="nextQuestion()" id="nextBtn" class="hidden px-6 py-3 rounded-full bg-green-600 hover:bg-green-700 text-white transition font-bold">下一题 →</button></div></div>`;
             container.innerHTML = html;
             if (q.visual) setTimeout(() => drawQuestionVisual(currentQuestion), 100);
@@ -1320,18 +1795,18 @@
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             const lt = isLight();
-            ctx.fillStyle = lt ? 'rgba(219,234,254,0.5)' : 'rgba(30,41,59,0.8)'; ctx.fillRect(0,75,300,75);
-            ctx.fillStyle = lt ? 'rgba(241,245,249,0.6)' : 'rgba(15,23,42,0.4)'; ctx.fillRect(0,0,300,75);
-            ctx.strokeStyle = lt ? 'rgba(100,116,139,0.3)' : 'rgba(255,255,255,0.3)'; ctx.beginPath(); ctx.moveTo(0,75); ctx.lineTo(300,75); ctx.stroke();
-            ctx.strokeStyle = lt ? 'rgba(100,116,139,0.25)' : 'rgba(255,255,255,0.2)'; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(150,20); ctx.lineTo(150,130); ctx.stroke(); ctx.setLineDash([]);
-            ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(100,130); ctx.lineTo(150,75); ctx.stroke();
-            ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(150,75); ctx.lineTo(200,130); ctx.stroke();
+            ctx.fillStyle = lt ? 'rgba(219,234,254,0.5)' : 'rgba(30,41,59,0.8)'; ctx.fillRect(0, 75, 300, 75);
+            ctx.fillStyle = lt ? 'rgba(241,245,249,0.6)' : 'rgba(15,23,42,0.4)'; ctx.fillRect(0, 0, 300, 75);
+            ctx.strokeStyle = lt ? 'rgba(100,116,139,0.3)' : 'rgba(255,255,255,0.3)'; ctx.beginPath(); ctx.moveTo(0, 75); ctx.lineTo(300, 75); ctx.stroke();
+            ctx.strokeStyle = lt ? 'rgba(100,116,139,0.25)' : 'rgba(255,255,255,0.2)'; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(150, 20); ctx.lineTo(150, 130); ctx.stroke(); ctx.setLineDash([]);
+            ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(100, 130); ctx.lineTo(150, 75); ctx.stroke();
+            ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(150, 75); ctx.lineTo(200, 130); ctx.stroke();
             ctx.fillStyle = lt ? '#334155' : 'white'; ctx.font = '12px sans-serif';
-            ctx.fillText('玻璃 n=1.5',20,110); ctx.fillText('空气 n=1.0',20,30); ctx.fillText('50°',130,100);
+            ctx.fillText('玻璃 n=1.5', 20, 110); ctx.fillText('空气 n=1.0', 20, 30); ctx.fillText('50°', 130, 100);
         }
 
         function selectOption(idx) {
-            document.querySelectorAll('.option-card').forEach((c,i) => { c.classList.remove('selected'); document.getElementById(`badge${i}`).classList.remove('bg-blue-600'); });
+            document.querySelectorAll('.option-card').forEach((c, i) => { c.classList.remove('selected'); document.getElementById(`badge${i}`).classList.remove('bg-blue-600'); });
             document.getElementById(`opt${idx}`).classList.add('selected');
             document.getElementById(`badge${idx}`).classList.add('bg-blue-600');
             selectedOption = idx;
@@ -1352,7 +1827,7 @@
                 quizScore++;
                 if (ev) createParticles(ev.clientX, ev.clientY);
             }
-            userAnswers.push({ question:currentQuestion, correct:isCorrect, selected:selectedOption });
+            userAnswers.push({ question: currentQuestion, correct: isCorrect, selected: selectedOption });
         }
 
         function nextQuestion() { currentQuestion++; selectedOption = null; if (currentQuestion >= currentQuestions.length) showQuizResult(); else loadQuestion(); }
@@ -1393,7 +1868,7 @@
             updateDifficultyStars();
             loadQuestion();
         }
-        function createParticles(x,y) { for(let i=0;i<8;i++){const p=document.createElement('div');p.className='particle w-2 h-2 rounded-full bg-yellow-400';p.style.left=x+Math.random()*40-20+'px';p.style.top=y+'px';document.body.appendChild(p);setTimeout(()=>p.remove(),3000);} }
+        function createParticles(x, y) { for (let i = 0; i < 8; i++) { const p = document.createElement('div'); p.className = 'particle w-2 h-2 rounded-full bg-yellow-400'; p.style.left = x + Math.random() * 40 - 20 + 'px'; p.style.top = y + 'px'; document.body.appendChild(p); setTimeout(() => p.remove(), 3000); } }
 
         /* ═══════════ GAME: MIRROR PUZZLE ═══════════ */
         const gameCanvas = document.getElementById('gameCanvas');
@@ -1415,7 +1890,7 @@
                 name: '第 1 关：一段光纤内壁，把光线转个弯',
                 emitter: { x: 80, y: 100, angle: 0 },
                 receiver: { x: 300, y: 420, r: 30 },
-                mirrors: [ { x1: 271, y1: 4, x2: 329, y2: 196 } ],
+                mirrors: [{ x1: 271, y1: 4, x2: 329, y2: 196 }],
                 obstacles: []
             },
             {
@@ -1427,7 +1902,7 @@
                     { x1: 216, y1: 27, x2: 284, y2: 173 },
                     { x1: 210, y1: 331, x2: 290, y2: 469 }
                 ],
-                obstacles: [ { x: 290, y: 50, w: 25, h: 250 } ]
+                obstacles: [{ x: 290, y: 50, w: 25, h: 250 }]
             },
             {
                 // Solution: mirrors at ~[0°, 0°, 0°] (all horizontal → need to rotate to ~vertical).
@@ -1439,7 +1914,7 @@
                     { x1: 225, y1: 373, x2: 375, y2: 427 },
                     { x1: 525, y1: 373, x2: 675, y2: 427 }
                 ],
-                obstacles: [ { x: 390, y: 0, w: 25, h: 350 } ]
+                obstacles: [{ x: 390, y: 0, w: 25, h: 350 }]
             }
         ];
 
@@ -1691,7 +2166,7 @@
             ctx.clearRect(0, 0, W, H);
 
             // Background
-            if (lt) { ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,W,H); }
+            if (lt) { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H); }
 
             // Background grid
             ctx.strokeStyle = lt ? 'rgba(0,0,80,0.05)' : 'rgba(59,130,246,0.04)';
