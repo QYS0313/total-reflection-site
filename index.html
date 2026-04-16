@@ -1215,9 +1215,9 @@
                 demoCtx.shadowBlur = 0;
 
                 // Faint partial reflection
-                const prx = cx + rayLen * 0.25 * Math.sin(angleRad);
-                const pry = cy + rayLen * 0.25 * Math.cos(angleRad);
-                demoCtx.strokeStyle = 'rgba(239,68,68,0.22)';
+                const prx = cx + rayLen * Math.sin(angleRad);
+                const pry = cy + rayLen * Math.cos(angleRad);
+                demoCtx.strokeStyle = 'rgba(239,68,68,0.6)';
                 demoCtx.lineWidth = 2;
                 demoCtx.beginPath(); demoCtx.moveTo(cx, cy); demoCtx.lineTo(prx, pry); demoCtx.stroke();
 
