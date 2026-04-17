@@ -1658,9 +1658,9 @@
                 // Total internal reflection
                 const rx = cx + rayLen * Math.sin(angleRad);
                 const ry = cy + rayLen * Math.cos(angleRad);
-                demoCtx.strokeStyle = '#22d3ee';
+                demoCtx.strokeStyle = '#ef4444';
                 demoCtx.lineWidth = 3;
-                demoCtx.shadowBlur = 16; demoCtx.shadowColor = '#22d3ee';
+                demoCtx.shadowBlur = 16; demoCtx.shadowColor = '#ef4444';
                 demoCtx.beginPath(); demoCtx.moveTo(cx, cy); demoCtx.lineTo(rx, ry); demoCtx.stroke();
                 demoCtx.shadowBlur = 0;
                 drawAngleArc(cx, cy, Math.PI / 2 - angleRad, Math.PI / 2, 58, '#22d3ee', 'γ');
@@ -1683,9 +1683,9 @@
                 const refractDeg = refractAngle * 180 / Math.PI;
                 const rfx = cx + rayLen * Math.sin(refractAngle);
                 const rfy = cy - rayLen * Math.cos(refractAngle);
-                demoCtx.strokeStyle = 'rgba(34,211,238,0.85)';
+                demoCtx.strokeStyle = 'rgba(239,68,68,0.7)';
                 demoCtx.lineWidth = 3;
-                demoCtx.shadowBlur = 12; demoCtx.shadowColor = '#22d3ee';
+                demoCtx.shadowBlur = 12; demoCtx.shadowColor = '#ef4444';
                 demoCtx.beginPath(); demoCtx.moveTo(cx, cy); demoCtx.lineTo(rfx, rfy); demoCtx.stroke();
                 demoCtx.shadowBlur = 0;
 
