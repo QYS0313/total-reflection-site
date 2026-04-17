@@ -970,8 +970,8 @@
             </div>
             <div class="flex gap-2 items-center">
                 <button onclick="showSection('learn',this)" class="nav-pill nav-btn active">知识讲解</button>
-                <button onclick="showSection('quiz',this)" class="nav-pill nav-btn">互动题目</button>
-                <button onclick="showSection('game',this)" class="nav-pill nav-btn">光纤游戏</button>
+                <button onclick="showSection('quiz',this)" class="nav-pill nav-btn">检验自测</button>
+                <button onclick="showSection('game',this)" class="nav-pill nav-btn">互动游戏</button>
                 <div class="theme-toggle" onclick="toggleTheme()" id="themeToggle" title="切换明暗主题">🌙</div>
             </div>
         </div>
@@ -1199,7 +1199,7 @@
                         <div class="space-y-3 text-sm" style="color:var(--text-muted);">
                             <p>场景中有 <strong style="color:var(--text-primary);">激光发射器</strong>（红色）和 <strong style="color:var(--text-primary);">接收器</strong>（绿色），中间有几段 <strong style="color:var(--text-primary);">光纤内壁</strong>（蓝色线段）。</p>
                             <p><strong style="color:var(--text-primary);">拖拽光纤内壁两端</strong>旋转角度，光线会<strong style="color:var(--accent-cyan);">实时跟随变化</strong>。</p>
-                            <p>光线碰到光纤内壁时会计算入射角：大于临界角(42°)就<strong style="color:var(--accent-cyan);">全反射</strong>，否则光线<strong style="color:#ef4444;">穿透失败</strong>。</p>
+                            <p>光线碰到光纤内壁时会计算入射角：大于临界角(42°)就<strong style="color:var(--accent-cyan);">全反射</strong>，否则光线<strong style="color:#ef4444;">穿透失败</strong>。由于未形成全反射时<strong style="color:var(--accent-cyan);">反射光较弱</strong>，因此此游戏中<strong style="color:var(--accent-cyan);">不显示</strong>此时的反射光，从而更好的<strong style="color:var(--accent-cyan);">模拟光纤的实际效果</strong>。</p>
                         </div>
                     </div>
                     <div class="glass rounded-2xl p-6">
