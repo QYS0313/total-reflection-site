@@ -972,6 +972,7 @@
                 <button onclick="showSection('learn',this)" class="nav-pill nav-btn active">知识讲解</button>
                 <button onclick="showSection('quiz',this)" class="nav-pill nav-btn">检验自测</button>
                 <button onclick="showSection('game',this)" class="nav-pill nav-btn">互动游戏</button>
+                <button onclick="showSection('ai',this)" class="nav-pill nav-btn">AI答疑</button>
                 <div class="theme-toggle" onclick="toggleTheme()" id="themeToggle" title="切换明暗主题">🌙</div>
             </div>
         </div>
@@ -1216,6 +1217,72 @@
                 </div>
             </div>
         </section>
+
+        <!-- ──────── AI SECTION ──────── -->
+        <section id="ai-section" class="hidden space-y-6">
+            <div class="text-center py-6">
+                <p class="text-xs font-semibold tracking-widest uppercase mb-3" style="color:var(--accent-cyan);">AI Learning Assistant</p>
+                <h2 class="text-3xl font-bold mb-2">🤖 AI 全反射答疑助手</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">
+                    输入你对全反射、临界角、折射、光纤通信的疑问，AI 会用适合初中生理解的方式回答。
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 glass rounded-2xl p-6 space-y-4" style="border:1px solid var(--border-subtle);">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2" style="color:var(--accent-cyan);">你的问题</label>
+                        <textarea
+                            id="aiQuestion"
+                            class="w-full min-h-[140px] rounded-xl p-4 outline-none resize-y"
+                            style="background:rgba(15,23,42,0.55);border:1px solid var(--border-subtle);color:var(--text-primary);"
+                            placeholder="例如：为什么光从水射向空气时才可能发生全反射？"
+                        ></textarea>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="setAIQuestion('全反射是什么？')" class="px-3 py-1.5 rounded-lg text-xs font-medium transition" style="background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.25);color:var(--accent-cyan);">全反射是什么？</button>
+                        <button onclick="setAIQuestion('为什么全反射只能从光密介质射向光疏介质？')" class="px-3 py-1.5 rounded-lg text-xs font-medium transition" style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.25);color:var(--accent-blue);">发生条件</button>
+                        <button onclick="setAIQuestion('临界角是什么意思？怎么判断是否发生全反射？')" class="px-3 py-1.5 rounded-lg text-xs font-medium transition" style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.25);color:var(--accent-purple);">临界角</button>
+                        <button onclick="setAIQuestion('光纤为什么可以利用全反射传输信号？')" class="px-3 py-1.5 rounded-lg text-xs font-medium transition" style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);color:var(--accent-amber);">光纤原理</button>
+                    </div>
+
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <button
+                            id="aiAskButton"
+                            onclick="askAI()"
+                            class="px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 transition font-bold"
+                        >
+                            提问
+                        </button>
+                        <span id="aiStatus" class="text-sm" style="color:var(--text-muted);">接口地址：/api/ai</span>
+                    </div>
+
+                    <div id="aiAnswerBox" class="hidden rounded-xl p-4" style="background:rgba(15,23,42,0.55);border:1px solid var(--border-subtle);">
+                        <div class="text-sm mb-2" style="color:var(--text-muted);">AI 回答：</div>
+                        <div id="aiAnswer" class="leading-relaxed" style="color:var(--text-primary);white-space:pre-wrap;"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="glass rounded-2xl p-6" style="border:1px solid var(--border-subtle);">
+                        <h3 class="text-lg font-bold mb-3" style="color:var(--accent-purple);">💡 使用说明</h3>
+                        <ul class="text-sm space-y-2 leading-relaxed" style="color:var(--text-muted);">
+                            <li>• 尽量问和全反射、临界角、光纤有关的问题。</li>
+                            <li>• AI 会优先用初中物理的语言解释。</li>
+                            <li>• 如果回答不够清楚，可以继续追问“再简单一点”。</li>
+                        </ul>
+                    </div>
+                    <div class="concept-card" style="border-left:3px solid var(--accent-cyan);">
+                        <span class="concept-label" style="color:var(--accent-cyan);">技术说明</span>
+                        <p class="text-sm mt-2 leading-relaxed" style="color:var(--text-muted);">
+                            前端页面只负责收集问题，真正的大模型调用由 Cloudflare Worker 后端完成，这样可以避免 API Key 暴露在网页源码中。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- ═══════════ DETAIL OVERLAY ═══════════ -->
@@ -1256,12 +1323,12 @@
         }
 
         function showSection(section, btn) {
-            document.getElementById('learn-section').classList.add('hidden');
-            document.getElementById('quiz-section').classList.add('hidden');
-            document.getElementById('game-section').classList.add('hidden');
+            ['learn', 'quiz', 'game', 'ai'].forEach(name => {
+                document.getElementById(name + '-section').classList.add('hidden');
+            });
             document.getElementById(section + '-section').classList.remove('hidden');
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            if (btn) btn.classList.add('active');
+            if (btn && btn.classList.contains('nav-btn')) btn.classList.add('active');
             currentSection = section;
             if (section === 'quiz' && currentQuestions.length === 0) {
                 const defaultBtn = document.querySelector('#difficultyTabs .medium-tab');
@@ -1312,6 +1379,65 @@
                     star.classList.remove('active-star', 'earned');
                 }
             });
+        }
+
+        /* ═══════════ AI ASSISTANT ═══════════ */
+        function setAIQuestion(question) {
+            const input = document.getElementById('aiQuestion');
+            if (!input) return;
+            input.value = question;
+            input.focus();
+        }
+
+        async function askAI() {
+            const questionInput = document.getElementById('aiQuestion');
+            const answerBox = document.getElementById('aiAnswerBox');
+            const answerDiv = document.getElementById('aiAnswer');
+            const statusText = document.getElementById('aiStatus');
+            const askButton = document.getElementById('aiAskButton');
+
+            const question = questionInput.value.trim();
+
+            if (!question) {
+                alert('请先输入问题');
+                return;
+            }
+
+            answerBox.classList.remove('hidden');
+            answerDiv.textContent = '正在思考中...';
+            statusText.textContent = '正在连接 AI 后端...';
+            askButton.disabled = true;
+            askButton.textContent = '思考中...';
+            askButton.style.opacity = '0.65';
+
+            try {
+                const res = await fetch('/api/ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question })
+                });
+
+                let data = {};
+                try {
+                    data = await res.json();
+                } catch (parseError) {
+                    throw new Error('后端返回格式不是 JSON');
+                }
+
+                if (!res.ok) {
+                    throw new Error(data.error || `请求失败：HTTP ${res.status}`);
+                }
+
+                answerDiv.textContent = data.answer || data.error || '没有获得回答，请稍后再试。';
+                statusText.textContent = '回答已生成';
+            } catch (err) {
+                answerDiv.textContent = '请求失败，请检查 Cloudflare Worker 路由或网络连接。\n\n错误信息：' + err.message;
+                statusText.textContent = '请求失败';
+            } finally {
+                askButton.disabled = false;
+                askButton.textContent = '提问';
+                askButton.style.opacity = '1';
+            }
         }
 
         /* ═══════════ APPLICATION DETAIL PAGES ═══════════ */
