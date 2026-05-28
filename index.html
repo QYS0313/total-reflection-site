@@ -264,6 +264,132 @@
         body.light-theme .formula-box {
             background: rgba(241,245,249,0.9);
         }
+
+
+        /* ── AI answer/input boxes ── */
+        .ai-field-box {
+            background: rgba(15,23,42,0.55);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
+        }
+
+        .ai-field-box::placeholder {
+            color: rgba(148,163,184,0.9);
+        }
+
+        body.light-theme .ai-field-box {
+            background: rgba(248,250,252,0.96);
+            border-color: rgba(148,163,184,0.35);
+            color: #1e293b;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.65);
+        }
+
+        body.light-theme .ai-field-box::placeholder {
+            color: #94a3b8;
+        }
+
+        body.light-theme #aiAnswer {
+            color: #1e293b !important;
+        }
+
+        body.light-theme #aiAnswerBox .text-sm {
+            color: #64748b !important;
+        }
+
+        /* ── AI chat history ── */
+        .ai-chat-list {
+            min-height: 280px;
+            max-height: 430px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .ai-chat-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .ai-chat-list::-webkit-scrollbar-thumb {
+            background: rgba(100,160,255,0.22);
+            border-radius: 999px;
+        }
+
+        .ai-empty-hint {
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-muted);
+            line-height: 1.9;
+            padding: 1rem;
+        }
+
+        .ai-message {
+            display: flex;
+            margin-bottom: 14px;
+            gap: 10px;
+        }
+
+        .ai-message.user {
+            justify-content: flex-end;
+        }
+
+        .ai-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            background: rgba(34,211,238,0.12);
+            border: 1px solid rgba(34,211,238,0.22);
+        }
+
+        .ai-message.user .ai-avatar {
+            display: none;
+        }
+
+        .ai-bubble {
+            max-width: min(78%, 620px);
+            border-radius: 18px;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            line-height: 1.75;
+            white-space: pre-wrap;
+            word-break: break-word;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .ai-message.assistant .ai-bubble {
+            background: rgba(15,23,42,0.52);
+            color: var(--text-primary);
+            border-top-left-radius: 6px;
+        }
+
+        .ai-message.user .ai-bubble {
+            background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(168,85,247,0.9));
+            color: #ffffff;
+            border-color: rgba(255,255,255,0.14);
+            border-top-right-radius: 6px;
+        }
+
+        body.light-theme .ai-message.assistant .ai-bubble {
+            background: rgba(248,250,252,0.98);
+            color: #1e293b;
+            border-color: rgba(148,163,184,0.35);
+        }
+
+        body.light-theme .ai-message.user .ai-bubble {
+            color: #ffffff;
+        }
+
+        body.light-theme .ai-empty-hint {
+            color: #64748b;
+        }
+
         /* Theme toggle button */
         .theme-toggle {
             width: 36px;
@@ -1224,20 +1350,28 @@
                 <p class="text-xs font-semibold tracking-widest uppercase mb-3" style="color:var(--accent-cyan);">AI Learning Assistant</p>
                 <h2 class="text-3xl font-bold mb-2">🤖 AI 全反射答疑助手</h2>
                 <p class="text-slate-400 max-w-2xl mx-auto">
-                    写下你对全反射、临界角、折射、光纤通信的疑问，AI 会用适合中学生理解的方式回答。
+                    像和老师聊天一样提问，可以连续追问，AI 会尽量用初中生听得懂的话解释。
                 </p>
             </div>
 
             <div class="grid lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 glass rounded-2xl p-6 space-y-4" style="border:1px solid var(--border-subtle);">
                     <div>
+                        <div class="flex items-center justify-between gap-3 mb-2">
+                            <label class="block text-sm font-semibold" style="color:var(--accent-cyan);">对话记录</label>
+                            <button onclick="clearAIChat()" class="px-3 py-1.5 rounded-lg text-xs font-medium transition" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);color:#ef4444;">清空对话</button>
+                        </div>
+                        <div id="aiChatList" class="ai-field-box ai-chat-list rounded-xl p-4"></div>
+                    </div>
+
+                    <div>
                         <label class="block text-sm font-semibold mb-2" style="color:var(--accent-cyan);">你的问题</label>
                         <textarea
                             id="aiQuestion"
-                            class="w-full min-h-[140px] rounded-xl p-4 outline-none resize-y"
-                            style="background:rgba(15,23,42,0.55);border:1px solid var(--border-subtle);color:var(--text-primary);"
-                            placeholder="例如：为什么光从水射向空气时才可能发生全反射？"
+                            class="ai-field-box w-full min-h-[110px] rounded-xl p-4 outline-none resize-y"
+                            placeholder="例如：临界角是什么意思？怎么判断是否发生全反射？"
                         ></textarea>
+                        <p class="text-xs mt-2" style="color:var(--text-muted);">小提示：输入问题后点“提问”，也可以按 Ctrl + Enter 发送。</p>
                     </div>
 
                     <div class="flex flex-wrap gap-2">
@@ -1255,12 +1389,7 @@
                         >
                             提问
                         </button>
-                        <span id="aiStatus" class="text-sm" style="color:var(--text-muted);">接口地址：/api/ai</span>
-                    </div>
-
-                    <div id="aiAnswerBox" class="hidden rounded-xl p-4" style="background:rgba(15,23,42,0.55);border:1px solid var(--border-subtle);">
-                        <div class="text-sm mb-2" style="color:var(--text-muted);">AI 回答：</div>
-                        <div id="aiAnswer" class="leading-relaxed" style="color:var(--text-primary);white-space:pre-wrap;"></div>
+                        <span id="aiStatus" class="text-sm" style="color:var(--text-muted);">可以开始提问</span>
                     </div>
                 </div>
 
@@ -1268,10 +1397,10 @@
                     <div class="glass rounded-2xl p-6" style="border:1px solid var(--border-subtle);">
                         <h3 class="text-lg font-bold mb-3" style="color:var(--accent-purple);">💡 使用说明</h3>
                         <ul class="text-sm space-y-3 leading-relaxed" style="color:var(--text-muted);">
-                            <li>• 想不懂某个光学现象时，就像问老师一样直接提问。</li>
-                            <li>• 可以问“为什么会全反射”“临界角怎么判断”“光纤为什么能传光”。</li>
-                            <li>• 回答看不明白时，可以继续追问：“再简单一点”或“举个生活例子”。</li>
-                            <li>• 也可以先点左边的小标签，快速开启一个问题。</li>
+                            <li>• 把它当成一位耐心的物理小老师：哪里卡住，就直接问哪里。</li>
+                            <li>• 可以问“为什么”“怎么判断”“举个例子”，也可以让它“再简单一点”。</li>
+                            <li>• 前面的聊天会被保留下来，追问时不用每次都重新说明背景。</li>
+                            <li>• 想重新开始学习时，点左边的“清空对话”即可。</li>
                         </ul>
                     </div>
                 </div>
@@ -1377,17 +1506,113 @@
         }
 
         /* ═══════════ AI ASSISTANT ═══════════ */
+        const AI_HISTORY_KEY = 'tir_ai_chat_history_v1';
+        let aiChatHistory = [];
+        let aiChatReady = false;
+
+        function initAIChat() {
+            if (aiChatReady) return;
+            aiChatReady = true;
+
+            try {
+                const saved = JSON.parse(localStorage.getItem(AI_HISTORY_KEY) || '[]');
+                if (Array.isArray(saved)) {
+                    aiChatHistory = saved
+                        .filter(item => item && (item.role === 'user' || item.role === 'assistant') && item.content)
+                        .map(item => ({
+                            role: item.role,
+                            content: String(item.content).slice(0, 1200)
+                        }));
+                }
+            } catch (error) {
+                aiChatHistory = [];
+            }
+
+            renderAIChat();
+
+            const input = document.getElementById('aiQuestion');
+            if (input) {
+                input.addEventListener('keydown', event => {
+                    if (event.ctrlKey && event.key === 'Enter') {
+                        event.preventDefault();
+                        askAI();
+                    }
+                });
+            }
+        }
+
+        function saveAIChat() {
+            try {
+                localStorage.setItem(AI_HISTORY_KEY, JSON.stringify(aiChatHistory.slice(-20)));
+            } catch (error) {
+                // localStorage may be unavailable in some private browsing modes.
+            }
+        }
+
+        function escapeHTML(str) {
+            return String(str)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
+        function renderAIChat() {
+            const list = document.getElementById('aiChatList');
+            if (!list) return;
+
+            if (!aiChatHistory.length) {
+                list.innerHTML = `
+                    <div class="ai-empty-hint">
+                        <div>
+                            <div style="font-size:2rem;margin-bottom:.5rem;">💬</div>
+                            <div>还没有对话记录。</div>
+                            <div>你可以先问：“全反射是什么？”</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = aiChatHistory.map(item => {
+                const isUser = item.role === 'user';
+                return `
+                    <div class="ai-message ${isUser ? 'user' : 'assistant'}">
+                        ${isUser ? '' : '<div class="ai-avatar">🤖</div>'}
+                        <div class="ai-bubble">${escapeHTML(item.content)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            requestAnimationFrame(() => {
+                list.scrollTop = list.scrollHeight;
+            });
+        }
+
         function setAIQuestion(question) {
+            initAIChat();
             const input = document.getElementById('aiQuestion');
             if (!input) return;
             input.value = question;
             input.focus();
         }
 
+        function clearAIChat() {
+            initAIChat();
+            if (aiChatHistory.length && !confirm('确定要清空当前 AI 对话记录吗？')) return;
+            aiChatHistory = [];
+            saveAIChat();
+            renderAIChat();
+
+            const statusText = document.getElementById('aiStatus');
+            if (statusText) statusText.textContent = '对话已清空';
+        }
+
         async function askAI() {
+            initAIChat();
+
             const questionInput = document.getElementById('aiQuestion');
-            const answerBox = document.getElementById('aiAnswerBox');
-            const answerDiv = document.getElementById('aiAnswer');
             const statusText = document.getElementById('aiStatus');
             const askButton = document.getElementById('aiAskButton');
 
@@ -1398,8 +1623,17 @@
                 return;
             }
 
-            answerBox.classList.remove('hidden');
-            answerDiv.textContent = '正在思考中...';
+            const historyForAI = aiChatHistory
+                .filter(item => item.role === 'user' || item.role === 'assistant')
+                .slice(-8);
+
+            aiChatHistory.push({ role: 'user', content: question });
+            aiChatHistory.push({ role: 'assistant', content: '正在思考中...' });
+            const loadingIndex = aiChatHistory.length - 1;
+
+            questionInput.value = '';
+            renderAIChat();
+
             statusText.textContent = '正在连接 AI 后端...';
             askButton.disabled = true;
             askButton.textContent = '思考中...';
@@ -1409,7 +1643,10 @@
                 const res = await fetch('/api/ai', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question })
+                    body: JSON.stringify({
+                        question,
+                        history: historyForAI
+                    })
                 });
 
                 let data = {};
@@ -1423,17 +1660,21 @@
                     throw new Error(data.error || `请求失败：HTTP ${res.status}`);
                 }
 
-                answerDiv.textContent = data.answer || data.error || '没有获得回答，请稍后再试。';
+                aiChatHistory[loadingIndex].content = data.answer || data.error || '没有获得回答，请稍后再试。';
                 statusText.textContent = '回答已生成';
             } catch (err) {
-                answerDiv.textContent = '请求失败，请检查 Cloudflare Worker 路由或网络连接。\n\n错误信息：' + err.message;
+                aiChatHistory[loadingIndex].content = '请求失败，请检查 Cloudflare Worker 路由或网络连接。\n\n错误信息：' + err.message;
                 statusText.textContent = '请求失败';
             } finally {
+                saveAIChat();
+                renderAIChat();
+
                 askButton.disabled = false;
                 askButton.textContent = '提问';
                 askButton.style.opacity = '1';
             }
         }
+
 
         /* ═══════════ APPLICATION DETAIL PAGES ═══════════ */
         const detailData = {
@@ -2450,6 +2691,7 @@
         resizeDemoCanvas();
         document.getElementById('criticalInfo').textContent = `临界角: ${getCriticalAngle().toFixed(1)}°`;
         updateDifficultyStars();
+        initAIChat();
     </script>
 </body>
 </html>
