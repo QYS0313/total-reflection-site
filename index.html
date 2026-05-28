@@ -1266,8 +1266,8 @@
                 <p class="text-slate-400">按难度完成 6–7 道互动题目，测试你的理解程度。</p>
                 <div class="flex justify-center gap-3 mt-5 mb-2" id="difficultyTabs">
                     <button onclick="setDifficulty('easy', this)" class="medium-tab active">简单</button>
-                    <button onclick="setDifficulty('medium', this)" class="medium-tab">中等</button>
-                    <button onclick="setDifficulty('hard', this)" class="medium-tab">困难</button>
+                    <button onclick="setDifficulty('medium', this)" class="medium-tab">中级</button>
+                    <button onclick="setDifficulty('hard', this)" class="medium-tab">高级</button>
                 </div>
                 <p id="difficultyHint" class="text-sm text-slate-500 mt-2">当前难度：简单</p>
                 <div class="max-w-md mx-auto mt-6 bg-slate-800 rounded-full h-3 overflow-hidden">
@@ -1473,8 +1473,8 @@
 
             const hintMap = {
                 easy: '当前难度：简单（2题）',
-                medium: '当前难度：中等（2题）',
-                hard: '当前难度：困难（3题）'
+                medium: '当前难度：中级（2题）',
+                hard: '当前难度：高级（3题）'
             };
             document.getElementById('difficultyHint').textContent = hintMap[level];
 
@@ -2203,17 +2203,18 @@
 
             const fullCorrect = quizScore === currentQuestions.length;
 
+            // 满分时点亮对应星星；不满分也允许进入下一难度，避免卡在当前难度
             if (fullCorrect) {
                 completedDifficulties.add(currentDifficulty);
-                updateDifficultyStars();   // ← 必须有这句
+                updateDifficultyStars();
+            }
 
-                if (currentDifficulty === 'easy') {
-                    nextBtn.textContent = '进入中等难度 →';
-                    nextBtn.classList.remove('hidden');
-                } else if (currentDifficulty === 'medium') {
-                    nextBtn.textContent = '进入困难难度 →';
-                    nextBtn.classList.remove('hidden');
-                }
+            if (currentDifficulty === 'easy') {
+                nextBtn.textContent = '进入中级难度 →';
+                nextBtn.classList.remove('hidden');
+            } else if (currentDifficulty === 'medium') {
+                nextBtn.textContent = '进入高级难度 →';
+                nextBtn.classList.remove('hidden');
             }
         }
         function restartQuiz() {
