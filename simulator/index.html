@@ -284,7 +284,8 @@ canvas {
   border-radius: 4px;
 }
 .ray-card canvas {
-  min-height: 380px;
+  aspect-ratio: 600 / 380;
+  max-height: 420px;
 }
 
 /* ----- Footer note ----- */
@@ -296,6 +297,93 @@ canvas {
   letter-spacing: 0.18em;
   font-family: 'Orbitron', sans-serif;
 }
+
+/* ----- Mobile optimization ----- */
+@media (max-width: 980px) {
+  body { padding: 10px; }
+  .wrap { max-width: 100%; }
+  .header { margin-bottom: 10px; padding: 10px 12px; }
+  .header h1 {
+    font-size: clamp(1.05rem, 5vw, 1.35rem);
+    letter-spacing: 0.03em;
+    line-height: 1.25;
+  }
+  .header .sub {
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+  .main {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .panel { padding: 12px; }
+  .controls h2 {
+    font-size: 0.76rem;
+    letter-spacing: 0.14em;
+  }
+  .ctrl-group { margin-bottom: 12px; }
+  .ctrl-label { font-size: 0.78rem; }
+  button {
+    min-height: 40px;
+    font-size: 0.72rem;
+  }
+  .read-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 5px 12px;
+  }
+  .status {
+    font-size: 0.74rem;
+    letter-spacing: 0.05em;
+    line-height: 1.35;
+    padding: 8px 6px;
+  }
+  .canvas-card { padding: 10px; }
+  .canvas-card h3 {
+    display: block;
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    line-height: 1.45;
+  }
+  .canvas-card h3 .tag {
+    display: block;
+    margin-top: 3px;
+    font-size: 0.58rem;
+    letter-spacing: 0.04em;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  canvas {
+    width: 100%;
+    height: auto;
+  }
+  .ray-card canvas {
+    min-height: 0;
+    max-height: none;
+  }
+  .footnote {
+    font-size: 0.54rem;
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 430px) {
+  body { padding: 8px; }
+  .header h1 { font-size: 1.05rem; }
+  .header .sub { font-size: 0.52rem; }
+  .panel { padding: 10px; }
+  .read-grid { grid-template-columns: 1fr; }
+  .read-row {
+    font-size: 0.72rem;
+    padding: 2px 0;
+  }
+  .canvas-card h3 { font-size: 0.70rem; }
+  .canvas-card h3 .tag { font-size: 0.54rem; }
+}
+
 </style>
 </head>
 <body>
@@ -304,7 +392,7 @@ canvas {
 <div class="header frame">
   <span class="c-tl"></span><span class="c-br"></span>
   <h1>全反射 与 <span class="accent">全透射</span> 虚拟仿真</h1>
-  <div class="sub">TOTAL INTERNAL REFLECTION &nbsp;·&nbsp; WAVE IMPEDANCE MATCHING</div>
+  <div class="sub">TOTAL INTERNAL REFLECTION · WAVE IMPEDANCE MATCHING</div>
 </div>
 
 <div class="main">
@@ -402,12 +490,12 @@ canvas {
   <!-- ============ 波动可视化 (全透射演示) ============ -->
   <div class="panel canvas-card ray-card frame">
     <span class="c-tl"></span><span class="c-br"></span>
-    <h3>波动可视化 · 全透射演示 <span class="tag">[wave impedance matching → Γ = 0]</span></h3>
+    <h3>波动可视化 · 全透射演示 <span class="tag">[波阻抗匹配 → Γ = 0]</span></h3>
     <canvas id="rayCanvasPol" width="600" height="380"></canvas>
   </div>
 </div>
 
-<div class="footnote">// TOTAL INTERNAL REFLECTION · WAVE IMPEDANCE MATCHING · INTERACTIVE PHYSICS DEMO //</div>
+<div class="footnote">// 全反射 · 波阻抗匹配 · 交互式物理演示 //</div>
 </div>
 
 <script>
