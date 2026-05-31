@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全反射与全透射 · 虚拟仿真平台</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #050d10;
+  --bg-panel: rgba(14, 31, 35, 0.85);
+  --bg-elev: #142a30;
+  --cyan: #7FFFD4;
+  --cyan-bright: #4FD1C5;
+  --cyan-dim: #2a5a55;
+  --gold: #FFD700;
+  --coral: #FF6B6B;
+  --refract: #4FC3F7;
+  --text: #d8ebe6;
+  --text-dim: #7a9a95;
+  --border: rgba(127, 255, 212, 0.22);
+  --glow: rgba(127, 255, 212, 0.35);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: 'JetBrains Mono', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', monospace;
+  background: var(--bg-deep);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 16px 24px 24px;
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(127, 255, 212, 0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 90%, rgba(0, 200, 200, 0.05) 0%, transparent 55%),
+    linear-gradient(0deg, transparent 0%, rgba(127, 255, 212, 0.018) 50%, transparent 100%);
+  background-attachment: fixed;
+}
+
+/* Subtle scanline texture */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(127, 255, 212, 0.012) 3px,
+    rgba(127, 255, 212, 0.012) 4px
+  );
+  z-index: 1;
+}
+
+.wrap { position: relative; z-index: 2; max-width: 1480px; margin: 0 auto; }
+
+/* ----- Header ----- */
+.header {
+  text-align: center;
+  margin-bottom: 14px;
+  padding: 8px 16px 12px;
+  position: relative;
+}
+.header h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+  letter-spacing: 0.06em;
+  color: var(--cyan);
+  text-shadow: 0 0 22px var(--glow), 0 0 4px var(--glow);
+}
+.header h1 .accent { color: var(--gold); text-shadow: 0 0 22px rgba(255, 215, 0, 0.4); }
+.header .sub {
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  margin-top: 4px;
+  letter-spacing: 0.35em;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 500;
+}
+
+/* ----- Decorative corner brackets ----- */
+.frame { position: relative; }
+.frame::before, .frame::after,
+.frame > .c-tl, .frame > .c-br {
+  content: ''; position: absolute; width: 14px; height: 14px;
+  border: 2px solid var(--cyan);
+  filter: drop-shadow(0 0 4px var(--glow));
+}
+.frame::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.frame::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+.frame > .c-tl { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+.frame > .c-br { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+
+/* ----- Main layout (3 columns: controls | intensity-ray | wave-transmission, curves below full-width) ----- */
+.main {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 1280px) {
+  .main { grid-template-columns: 300px minmax(0, 1fr); }
+}
+@media (max-width: 980px) {
+  .main { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  backdrop-filter: blur(6px);
+}
+
+/* ----- Control panel ----- */
+.controls h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 0.22em;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.ctrl-group { margin-bottom: 14px; }
+.ctrl-label {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 0.8rem; margin-bottom: 6px;
+}
+.ctrl-label .name { color: var(--text); letter-spacing: 0.02em; }
+.ctrl-label .val {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  color: var(--cyan-bright);
+  font-size: 0.95rem;
+  min-width: 60px;
+  text-align: right;
+}
+.ctrl-label .val.gold { color: var(--gold); }
+
+input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 4px;
+  background: linear-gradient(90deg, var(--cyan-dim), var(--cyan));
+  outline: none; cursor: pointer; border-radius: 2px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px;
+  background: var(--cyan);
+  border: 2px solid var(--bg-deep);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--glow);
+  cursor: grab;
+}
+input[type=range]::-moz-range-thumb {
+  width: 16px; height: 16px;
+  background: var(--cyan);
+  border: 2px solid var(--bg-deep);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--glow);
+  cursor: grab;
+}
+input[type=range].gold {
+  background: linear-gradient(90deg, #5a4500, var(--gold));
+}
+input[type=range].gold::-webkit-slider-thumb { background: var(--gold); box-shadow: 0 0 12px rgba(255, 215, 0, 0.4); }
+input[type=range].gold::-moz-range-thumb { background: var(--gold); box-shadow: 0 0 12px rgba(255, 215, 0, 0.4); }
+
+.btn-row { display: flex; gap: 8px; margin: 6px 0 14px; }
+button {
+  flex: 1;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  padding: 8px 6px;
+  background: transparent;
+  color: var(--cyan);
+  border: 1px solid var(--cyan-dim);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+button:hover {
+  background: rgba(127, 255, 212, 0.08);
+  border-color: var(--cyan);
+  box-shadow: 0 0 14px var(--glow);
+  color: var(--cyan-bright);
+}
+button.active {
+  background: rgba(127, 255, 212, 0.15);
+  border-color: var(--cyan);
+  color: var(--cyan-bright);
+  box-shadow: 0 0 14px var(--glow);
+}
+
+/* ----- Readouts panel ----- */
+.readouts {
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+.read-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+}
+.read-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 3px 0;
+  font-size: 0.72rem;
+}
+.read-row .k { color: var(--text-dim); letter-spacing: 0.02em; }
+.read-row .v {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+.v-cyan { color: var(--cyan-bright); }
+.v-gold { color: var(--gold); }
+.v-coral { color: var(--coral); }
+.v-refract { color: var(--refract); }
+
+.status {
+  margin-top: 10px;
+  padding: 8px;
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  border: 1px solid var(--cyan-dim);
+  background: rgba(127, 255, 212, 0.04);
+  color: var(--cyan-bright);
+  transition: all 0.3s;
+}
+.status.tir {
+  border-color: var(--coral);
+  color: var(--coral);
+  background: rgba(255, 107, 107, 0.08);
+  box-shadow: 0 0 18px rgba(255, 107, 107, 0.25);
+}
+.status.brewster {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(255, 215, 0, 0.08);
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.25);
+}
+
+/* ----- Canvas card ----- */
+.canvas-card { padding: 12px 14px; position: relative; height: 100%; }
+.canvas-card h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 0.18em;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.canvas-card h3 .tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(127, 255, 212, 0.08);
+  border-radius: 4px;
+}
+.ray-card canvas {
+  min-height: 380px;
+}
+
+/* ----- Footer note ----- */
+.footnote {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.18em;
+  font-family: 'Orbitron', sans-serif;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="header frame">
+  <span class="c-tl"></span><span class="c-br"></span>
+  <h1>全反射 与 <span class="accent">全透射</span> 虚拟仿真</h1>
+  <div class="sub">TOTAL INTERNAL REFLECTION &nbsp;·&nbsp; WAVE IMPEDANCE MATCHING</div>
+</div>
+
+<div class="main">
+
+  <!-- ============ 控制面板 ============ -->
+  <aside class="panel controls frame">
+    <span class="c-tl"></span><span class="c-br"></span>
+    <h2>// CONTROL PANEL</h2>
+
+    <div class="ctrl-group">
+      <div class="ctrl-label">
+        <span class="name">介质 1 折射率 n₁</span>
+        <span class="val" id="lab-n1">1.50</span>
+      </div>
+      <input type="range" id="sl-n1" min="1.00" max="2.50" step="0.01" value="1.50">
+    </div>
+
+    <div class="ctrl-group">
+      <div class="ctrl-label">
+        <span class="name">介质 2 折射率 n₂</span>
+        <span class="val" id="lab-n2">1.00</span>
+      </div>
+      <input type="range" id="sl-n2" min="1.00" max="2.50" step="0.01" value="1.00">
+    </div>
+
+    <div class="ctrl-group">
+      <div class="ctrl-label">
+        <span class="name">入射角 θᵢ</span>
+        <span class="val gold" id="lab-theta">30.0°</span>
+      </div>
+      <input type="range" class="gold" id="sl-theta" min="0" max="89.5" step="0.1" value="30.0">
+    </div>
+
+    <div class="ctrl-group">
+      <div class="ctrl-label">
+        <span class="name">介质 1 波阻抗 Z₁</span>
+        <span class="val" id="lab-z1">1.00</span>
+      </div>
+      <input type="range" id="sl-z1" min="0.20" max="3.00" step="0.01" value="1.00">
+    </div>
+
+    <div class="ctrl-group">
+      <div class="ctrl-label">
+        <span class="name">介质 2 波阻抗 Z₂</span>
+        <span class="val" id="lab-z2">1.00</span>
+      </div>
+      <input type="range" id="sl-z2" min="0.20" max="3.00" step="0.01" value="1.00">
+    </div>
+
+    <div class="btn-row">
+      <button id="btn-sweep">自动扫描</button>
+      <button id="btn-reset">重置</button>
+    </div>
+
+    <div class="readouts">
+      <div class="read-grid">
+        <div class="read-row">
+          <span class="k">θ_c</span>
+          <span class="v v-coral" id="r-tc">41.81°</span>
+        </div>
+        <div class="read-row">
+          <span class="k">R_光</span>
+          <span class="v v-coral" id="r-rlight">0.0500</span>
+        </div>
+        <div class="read-row">
+          <span class="k">T_光</span>
+          <span class="v v-refract" id="r-tlight">0.9500</span>
+        </div>
+        <div class="read-row">
+          <span class="k">Γ</span>
+          <span class="v v-gold" id="r-gamma">0.0000</span>
+        </div>
+        <div class="read-row">
+          <span class="k">R_波</span>
+          <span class="v v-coral" id="r-rwave">0.0000</span>
+        </div>
+        <div class="read-row">
+          <span class="k">T_波</span>
+          <span class="v v-refract" id="r-twave">1.0000</span>
+        </div>
+      </div>
+
+      <div class="status" id="status">光学：普通反射 + 折射</div>
+      <div class="status brewster" id="status-wave">波：★ 全透射（Γ = 0）★</div>
+    </div>
+  </aside>
+
+  <!-- ============ 光强可视化 (全反射演示) ============ -->
+  <div class="panel canvas-card ray-card frame">
+    <span class="c-tl"></span><span class="c-br"></span>
+    <h3>光强可视化 · 全反射演示 <span class="tag">[total internal reflection]</span></h3>
+    <canvas id="rayCanvas" width="600" height="380"></canvas>
+  </div>
+
+  <!-- ============ 波动可视化 (全透射演示) ============ -->
+  <div class="panel canvas-card ray-card frame">
+    <span class="c-tl"></span><span class="c-br"></span>
+    <h3>波动可视化 · 全透射演示 <span class="tag">[wave impedance matching → Γ = 0]</span></h3>
+    <canvas id="rayCanvasPol" width="600" height="380"></canvas>
+  </div>
+</div>
+
+<div class="footnote">// TOTAL INTERNAL REFLECTION · WAVE IMPEDANCE MATCHING · INTERACTIVE PHYSICS DEMO //</div>
+</div>
+
+<script>
+// ============================================================
+//  全反射与全透射 · 物理计算 + 渲染
+// ============================================================
+
+const state = {
+  n1: 1.50,
+  n2: 1.00,
+  theta_i_deg: 30.0,
+
+  // 全透射改为波阻抗匹配模型：
+  // Γ = (Z₁ - Z₂) / (Z₁ + Z₂)。当 Z₁ = Z₂ 时 Γ = 0，无反射波；当 Γ < 0 时反射波倒置，体现半波损失。
+  z1: 1.00,
+  z2: 1.00,
+  wavePhase: 0,
+
+  sweeping: false,
+  sweepDir: 1,
+  lastT: 0,
+};
+
+// ---------- 物理: 菲涅尔方程 ----------
+function fresnel(n1, n2, theta_i) {
+  // 输入: 角度(弧度), 折射率
+  // 输出: {Rs, Rp, Ts, Tp, theta_t, tir}
+  const sin_i = Math.sin(theta_i);
+  const cos_i = Math.cos(theta_i);
+  const sin_t = (n1 / n2) * sin_i;
+
+  if (sin_t > 1) {
+    return { Rs: 1, Rp: 1, Ts: 0, Tp: 0, theta_t: NaN, tir: true };
+  }
+  const cos_t = Math.sqrt(1 - sin_t * sin_t);
+  const theta_t = Math.asin(sin_t);
+
+  const rs = (n1 * cos_i - n2 * cos_t) / (n1 * cos_i + n2 * cos_t);
+  const rp = (n2 * cos_i - n1 * cos_t) / (n2 * cos_i + n1 * cos_t);
+  const Rs = rs * rs;
+  const Rp = rp * rp;
+  return { Rs, Rp, Ts: 1 - Rs, Tp: 1 - Rp, theta_t, tir: false };
+}
+
+function criticalAngleDeg(n1, n2) {
+  if (n1 <= n2) return null;
+  return Math.asin(n2 / n1) * 180 / Math.PI;
+}
+function brewsterAngleDeg(n1, n2) {
+  return Math.atan(n2 / n1) * 180 / Math.PI;
+}
+
+// ---------- 物理: 波阻抗匹配 ----------
+function waveTransmission(z1, z2) {
+  // 这里采用适合机械波/绳波演示的位移反射系数：
+  // Γ = (Z₁ - Z₂) / (Z₁ + Z₂)
+  // 当 Z₂ > Z₁ 时 Γ < 0，反射波相位反转 π，对应“半波损失/倒置”。
+  // 当 Z₁ = Z₂ 时 Γ = 0，无反射波，表现为全透射。
+  const gamma = (z1 - z2) / (z1 + z2);
+  const R = gamma * gamma;              // 能量反射率（教学近似）
+  const T = 1 - R;                      // 无损界面下能量透射率（教学近似）
+  return {
+    gamma,
+    R,
+    T,
+    matched: Math.abs(gamma) < 0.01,
+    halfWaveLoss: gamma < -0.01
+  };
+}
+
+// ============================================================
+//  渲染 1: 光路示意
+// ============================================================
+const rayCanvas = document.getElementById('rayCanvas');
+const rctx = rayCanvas.getContext('2d');
+
+function drawRayDiagram() {
+  const w = rayCanvas.width, h = rayCanvas.height;
+  rctx.clearRect(0, 0, w, h);
+
+  const cx = w / 2, cy = h / 2;
+  const theta_i = state.theta_i_deg * Math.PI / 180;
+  const f = fresnel(state.n1, state.n2, theta_i);
+
+  // ---- 背景: 两种介质, 颜色由 n 决定 ----
+  // 介质 1 在下方 (光从这里入射)
+  const tint1 = Math.min(1, (state.n1 - 1) / 1.5);
+  const tint2 = Math.min(1, (state.n2 - 1) / 1.5);
+  rctx.fillStyle = `rgba(30, 80, 90, ${0.25 + 0.3 * tint1})`;
+  rctx.fillRect(0, cy, w, h - cy);
+  rctx.fillStyle = `rgba(20, 50, 60, ${0.15 + 0.3 * tint2})`;
+  rctx.fillRect(0, 0, w, cy);
+
+  // 介质标签
+  rctx.font = '14px JetBrains Mono, monospace';
+  rctx.textAlign = 'left';
+  rctx.fillStyle = '#a0e0e0';
+  rctx.fillText(`介质 2   n₂ = ${state.n2.toFixed(2)}`, 20, 30);
+  rctx.fillText(`介质 1   n₁ = ${state.n1.toFixed(2)}`, 20, h - 18);
+
+  // ---- 界面 ----
+  rctx.strokeStyle = 'rgba(127, 255, 212, 0.6)';
+  rctx.lineWidth = 1.5;
+  rctx.setLineDash([]);
+  rctx.beginPath();
+  rctx.moveTo(0, cy);
+  rctx.lineTo(w, cy);
+  rctx.stroke();
+
+  // 法线
+  rctx.strokeStyle = 'rgba(160, 200, 200, 0.5)';
+  rctx.lineWidth = 1;
+  rctx.setLineDash([6, 6]);
+  rctx.beginPath();
+  rctx.moveTo(cx, 30);
+  rctx.lineTo(cx, h - 30);
+  rctx.stroke();
+  rctx.setLineDash([]);
+
+  // ---- 光线 ----
+  const L = Math.min(w, h) * 0.42;
+
+  // 入射光 (从左下方过来到原点)
+  const ix = cx - L * Math.sin(theta_i);
+  const iy = cy + L * Math.cos(theta_i);
+  drawRayWithGlow(ix, iy, cx, cy, '#FFD700', 3, 1);
+  drawArrow(ix, iy, cx, cy, '#FFD700');
+
+  // 反射光 (回到介质 1 一侧)
+  const rx = cx + L * Math.sin(theta_i);
+  const ry = cy + L * Math.cos(theta_i);
+  const R_avg = (f.Rs + f.Rp) / 2;
+  drawRayWithGlow(cx, cy, rx, ry, '#FF6B6B', 2.5, Math.max(0.15, R_avg));
+
+  // 折射光 (穿过界面到介质 2)
+  if (!f.tir) {
+    const tx = cx + L * Math.sin(f.theta_t);
+    const ty = cy - L * Math.cos(f.theta_t);
+    const T_avg = (f.Ts + f.Tp) / 2;
+    drawRayWithGlow(cx, cy, tx, ty, '#4FC3F7', 2.5, Math.max(0.15, T_avg));
+  }
+
+  // ---- 角度弧 ----
+  // 入射角: 法线下半段 (π/2) 到入射光方向, 弧在介质 1 一侧 (下方)
+  drawAngleArc(cx, cy, 50, Math.PI / 2, Math.PI / 2 + theta_i, '#FFD700', `θᵢ = ${state.theta_i_deg.toFixed(1)}°`);
+  // 反射角: 法线下半段 (π/2) 到反射光方向, 角度也是 theta_i, 弧也在下方
+  drawAngleArc(cx, cy, 38, Math.PI / 2 - theta_i, Math.PI / 2, '#FF6B6B', `θᵣ`);
+  // 折射角: 法线上半段 (-π/2) 到折射光方向, 弧在介质 2 一侧 (上方)
+  if (!f.tir) {
+    drawAngleArc(cx, cy, 60, -Math.PI / 2, -Math.PI / 2 + f.theta_t, '#4FC3F7', `θₜ = ${(f.theta_t * 180 / Math.PI).toFixed(1)}°`, true);
+  }
+
+  // ---- 入射点 ----
+  rctx.fillStyle = '#7FFFD4';
+  rctx.shadowColor = '#7FFFD4';
+  rctx.shadowBlur = 12;
+  rctx.beginPath();
+  rctx.arc(cx, cy, 4, 0, Math.PI * 2);
+  rctx.fill();
+  rctx.shadowBlur = 0;
+}
+
+function drawRayWithGlow(x1, y1, x2, y2, color, width, opacity) {
+  // 发光效果: 多层叠加
+  rctx.globalAlpha = opacity * 0.3;
+  rctx.strokeStyle = color;
+  rctx.lineWidth = width * 3.5;
+  rctx.shadowColor = color;
+  rctx.shadowBlur = 14;
+  rctx.beginPath(); rctx.moveTo(x1, y1); rctx.lineTo(x2, y2); rctx.stroke();
+
+  rctx.globalAlpha = opacity;
+  rctx.lineWidth = width;
+  rctx.shadowBlur = 8;
+  rctx.beginPath(); rctx.moveTo(x1, y1); rctx.lineTo(x2, y2); rctx.stroke();
+
+  rctx.globalAlpha = 1;
+  rctx.shadowBlur = 0;
+}
+
+function drawArrow(x1, y1, x2, y2, color) {
+  // 在线中段画箭头
+  const mx = x1 + (x2 - x1) * 0.65;
+  const my = y1 + (y2 - y1) * 0.65;
+  const ang = Math.atan2(y2 - y1, x2 - x1);
+  const s = 9;
+  rctx.fillStyle = color;
+  rctx.beginPath();
+  rctx.moveTo(mx + s * Math.cos(ang), my + s * Math.sin(ang));
+  rctx.lineTo(mx + s * Math.cos(ang + 2.5), my + s * Math.sin(ang + 2.5));
+  rctx.lineTo(mx + s * Math.cos(ang - 2.5), my + s * Math.sin(ang - 2.5));
+  rctx.closePath();
+  rctx.fill();
+}
+
+function drawAngleArc(cx, cy, r, a1, a2, color, label, above) {
+  rctx.strokeStyle = color;
+  rctx.lineWidth = 1.5;
+  rctx.globalAlpha = 0.8;
+  rctx.beginPath();
+  rctx.arc(cx, cy, r, a1, a2);
+  rctx.stroke();
+  rctx.globalAlpha = 1;
+  // 标签
+  const midA = (a1 + a2) / 2;
+  const lx = cx + (r + 22) * Math.cos(midA);
+  const ly = cy + (r + 22) * Math.sin(midA);
+  rctx.fillStyle = color;
+  rctx.font = '12px JetBrains Mono, monospace';
+  rctx.textAlign = 'center';
+  rctx.fillText(label, lx, ly + 4);
+}
+
+// ============================================================
+//  渲染 1B: 波动可视化 (全透射演示)
+// ============================================================
+const rayCanvasPol = document.getElementById('rayCanvasPol');
+const pctx = rayCanvasPol.getContext('2d');
+
+// 绘制正弦波。direction = 1 表示向右传播，direction = -1 表示向左传播。
+function drawWaveLine(ctx, x1, x2, y0, amp, k, phase, direction, color, alpha = 1, width = 2.5) {
+  if (Math.abs(amp) < 0.3 || x2 <= x1) return;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 10;
+  ctx.beginPath();
+  for (let x = x1; x <= x2; x += 3) {
+    const y = y0 + amp * Math.sin(direction * k * x - phase);
+    if (x === x1) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawArrowWave(ctx, x1, y1, x2, y2, color, alpha = 1) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+
+  const ang = Math.atan2(y2 - y1, x2 - x1);
+  const s = 8;
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - s * Math.cos(ang - 0.55), y2 - s * Math.sin(ang - 0.55));
+  ctx.lineTo(x2 - s * Math.cos(ang + 0.55), y2 - s * Math.sin(ang + 0.55));
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawWaveTransmission() {
+  const w = rayCanvasPol.width, h = rayCanvasPol.height;
+  pctx.clearRect(0, 0, w, h);
+
+  const midX = w / 2;
+  const y0 = h / 2 - 4;
+  const wf = waveTransmission(state.z1, state.z2);
+  const gamma = wf.gamma;
+  const R = wf.R;
+  const T = wf.T;
+
+  // 背景：左右两段介质
+  pctx.fillStyle = 'rgba(30, 80, 90, 0.36)';
+  pctx.fillRect(0, 0, midX, h);
+  pctx.fillStyle = 'rgba(20, 50, 60, 0.32)';
+  pctx.fillRect(midX, 0, w - midX, h);
+
+  // 分界面
+  pctx.strokeStyle = 'rgba(127, 255, 212, 0.75)';
+  pctx.lineWidth = 2;
+  pctx.setLineDash([]);
+  pctx.beginPath();
+  pctx.moveTo(midX, 38);
+  pctx.lineTo(midX, h - 38);
+  pctx.stroke();
+
+  // 平衡位置
+  pctx.strokeStyle = 'rgba(160, 200, 200, 0.25)';
+  pctx.lineWidth = 1;
+  pctx.setLineDash([6, 6]);
+  pctx.beginPath();
+  pctx.moveTo(30, y0);
+  pctx.lineTo(w - 30, y0);
+  pctx.stroke();
+  pctx.setLineDash([]);
+
+  // 文字
+  pctx.font = '14px JetBrains Mono, monospace';
+  pctx.textAlign = 'left';
+  pctx.fillStyle = '#a0e0e0';
+  pctx.fillText(`介质 1   Z₁ = ${state.z1.toFixed(2)}`, 20, 30);
+  pctx.fillText(`介质 2   Z₂ = ${state.z2.toFixed(2)}`, midX + 20, 30);
+
+  pctx.textAlign = 'center';
+  pctx.fillStyle = '#7FFFD4';
+  pctx.fillText('两介质连接界面', midX, h - 18);
+
+  const phase = state.wavePhase;
+  const k1 = 0.055;
+  const k2 = k1;  // 仅演示阻抗匹配时的反射/透射关系，保持两侧波形频率和空间周期一致
+  const A = 34;
+
+  // 入射波：始终从左向右传播
+  drawWaveLine(pctx, 45, midX, y0, A, k1, phase, 1, '#FFD700', 1, 3);
+  drawArrowWave(pctx, 90, y0 - 62, 170, y0 - 62, '#FFD700', 1);
+  pctx.fillStyle = '#FFD700';
+  pctx.textAlign = 'center';
+  pctx.fillText('入射波', 130, y0 - 74);
+
+  // 反射波：阻抗匹配时 Γ = 0，不绘制反射波，只显示“无反射波”
+  const refAmp = A * gamma;
+  if (Math.abs(gamma) >= 0.01) {
+    const alpha = Math.max(0.25, Math.sqrt(R));
+    drawWaveLine(pctx, 45, midX, y0, refAmp, k1, phase, -1, '#FF6B6B', alpha, 3);
+    drawArrowWave(pctx, 230, y0 + 68, 150, y0 + 68, '#FF6B6B', alpha);
+    pctx.fillStyle = '#FF6B6B';
+    pctx.fillText(gamma < 0 ? '反射波（半波损失 · 倒置）' : '反射波（不倒置）', 205, y0 + 88);
+  } else {
+    pctx.strokeStyle = 'rgba(255, 107, 107, 0.75)';
+    pctx.lineWidth = 2;
+    pctx.beginPath();
+    pctx.moveTo(148, y0 + 36);
+    pctx.lineTo(188, y0 + 76);
+    pctx.moveTo(188, y0 + 36);
+    pctx.lineTo(148, y0 + 76);
+    pctx.stroke();
+    pctx.fillStyle = 'rgba(5, 13, 16, 0.72)';
+    pctx.fillRect(116, y0 + 82, 104, 26);
+    pctx.strokeStyle = 'rgba(255, 107, 107, 0.45)';
+    pctx.strokeRect(116, y0 + 82, 104, 26);
+    pctx.fillStyle = '#FF6B6B';
+    pctx.fillText('无反射波', 168, y0 + 100);
+  }
+
+  // 透射波：全透射时与入射波在分界面处连续；用 √T 表示透射能量强弱
+  const transAmp = A * Math.sqrt(Math.max(0, T));
+  drawWaveLine(pctx, midX, w - 45, y0, transAmp, k2, phase, 1, '#4FC3F7', Math.max(0.35, Math.sqrt(T)), 3);
+  drawArrowWave(pctx, midX + 55, y0 - 62, midX + 140, y0 - 62, '#4FC3F7', 1);
+  pctx.fillStyle = '#4FC3F7';
+  pctx.fillText('透射波', midX + 98, y0 - 74);
+
+  // 全透射时，用小亮点强调界面处连续通过，不是重新生成一列新波
+  if (wf.matched) {
+    const jointY = y0 + A * Math.sin(k1 * midX - phase);
+    pctx.save();
+    pctx.fillStyle = '#FFFFFF';
+    pctx.shadowColor = '#7FFFD4';
+    pctx.shadowBlur = 14;
+    pctx.beginPath();
+    pctx.arc(midX, jointY, 3.5, 0, Math.PI * 2);
+    pctx.fill();
+    pctx.restore();
+  }
+
+  // 中央读数
+  pctx.textAlign = 'center';
+  pctx.font = '14px JetBrains Mono, monospace';
+  if (wf.matched) {
+    pctx.fillStyle = '#FFD700';
+    pctx.fillText('★ 全透射：Z₁ = Z₂，Γ = 0，无反射波 ★', w / 2, 58);
+    pctx.fillStyle = '#a0e0e0';
+    pctx.font = '12px JetBrains Mono, monospace';
+    pctx.fillText('此时没有反射波，因此不存在半波损失', w / 2, 78);
+  } else if (wf.halfWaveLoss) {
+    pctx.fillStyle = '#FF6B6B';
+    pctx.fillText(`阻抗不匹配：Γ = ${gamma.toFixed(3)}，反射波倒置`, w / 2, 58);
+    pctx.fillStyle = '#FFD700';
+    pctx.font = '12px JetBrains Mono, monospace';
+    pctx.fillText('半波损失：反射波相位改变 π，相当于波形上下翻转', w / 2, 78);
+  } else {
+    pctx.fillStyle = '#a0e0e0';
+    pctx.fillText(`阻抗不匹配：Γ = ${gamma.toFixed(3)}，存在部分反射`, w / 2, 58);
+    pctx.fillStyle = '#a0e0e0';
+    pctx.font = '12px JetBrains Mono, monospace';
+    pctx.fillText('Γ > 0：反射波不倒置', w / 2, 78);
+  }
+
+  // 能量条：放在底部，说明文字放在条形图上方，避免遮挡“无反射波”
+  const barX = 120, barY = h - 50, barW = w - 240, barH = 12;
+
+  pctx.font = '12px JetBrains Mono, monospace';
+  pctx.textAlign = 'left';
+  pctx.fillStyle = '#FF6B6B';
+  pctx.fillText(`反射能量 R = ${R.toFixed(3)}`, barX, barY - 18);
+
+  pctx.textAlign = 'right';
+  pctx.fillStyle = '#4FC3F7';
+  pctx.fillText(`透射能量 T = ${T.toFixed(3)}`, barX + barW, barY - 18);
+
+  pctx.fillStyle = 'rgba(255,255,255,0.10)';
+  pctx.fillRect(barX, barY, barW, barH);
+  pctx.fillStyle = '#FF6B6B';
+  pctx.fillRect(barX, barY, barW * R, barH);
+  pctx.fillStyle = '#4FC3F7';
+  pctx.fillRect(barX + barW * R, barY, barW * T, barH);
+  pctx.strokeStyle = 'rgba(255,255,255,0.25)';
+  pctx.strokeRect(barX, barY, barW, barH);
+}
+
+function waveLoop(t) {
+  state.wavePhase = t * 0.006;
+  drawWaveTransmission();
+  requestAnimationFrame(waveLoop);
+}
+
+// ============================================================
+//  渲染 2: 菲涅尔曲线（已移除）
+// ============================================================
+function drawCurves() {
+  // 已移除菲涅尔曲线显示区，这里保留空函数以兼容旧逻辑。
+}
+
+// ============================================================
+//  更新 UI
+// ============================================================
+function updateAll() {
+  // 限制 theta < 90
+  if (state.theta_i_deg > 89.5) state.theta_i_deg = 89.5;
+
+  const theta_i = state.theta_i_deg * Math.PI / 180;
+  const f = fresnel(state.n1, state.n2, theta_i);
+  const wf = waveTransmission(state.z1, state.z2);
+
+  // 读数
+  document.getElementById('lab-n1').textContent = state.n1.toFixed(2);
+  document.getElementById('lab-n2').textContent = state.n2.toFixed(2);
+  document.getElementById('lab-theta').textContent = state.theta_i_deg.toFixed(1) + '°';
+  document.getElementById('lab-z1').textContent = state.z1.toFixed(2);
+  document.getElementById('lab-z2').textContent = state.z2.toFixed(2);
+
+  const tc = criticalAngleDeg(state.n1, state.n2);
+  const R_light = (f.Rs + f.Rp) / 2;
+  const T_light = (f.Ts + f.Tp) / 2;
+
+  document.getElementById('r-tc').textContent = tc === null ? '— (n₁ ≤ n₂)' : tc.toFixed(2) + '°';
+  document.getElementById('r-rlight').textContent = R_light.toFixed(4);
+  document.getElementById('r-tlight').textContent = T_light.toFixed(4);
+  document.getElementById('r-gamma').textContent = wf.gamma.toFixed(4);
+  document.getElementById('r-rwave').textContent = wf.R.toFixed(4);
+  document.getElementById('r-twave').textContent = wf.T.toFixed(4);
+
+  // 光学全反射状态
+  const statusEl = document.getElementById('status');
+  statusEl.classList.remove('tir', 'brewster');
+  if (tc !== null && state.theta_i_deg >= tc) {
+    statusEl.classList.add('tir');
+    statusEl.textContent = '光学：★ 全反射 (TIR) ★';
+  } else {
+    statusEl.textContent = '光学：普通反射 + 折射';
+  }
+
+  // 波动全透射状态
+  const statusWave = document.getElementById('status-wave');
+  statusWave.classList.remove('tir', 'brewster');
+  if (wf.matched) {
+    statusWave.classList.add('brewster');
+    statusWave.textContent = '波：★ 全透射（Γ = 0）★';
+  } else if (wf.halfWaveLoss) {
+    statusWave.classList.add('tir');
+    statusWave.textContent = '波：部分反射 + 半波损失';
+  } else {
+    statusWave.classList.add('tir');
+    statusWave.textContent = '波：部分反射 + 部分透射';
+  }
+
+  // 同步滑块（自动扫描时也要更新）
+  document.getElementById('sl-theta').value = state.theta_i_deg;
+
+  drawRayDiagram();
+  drawWaveTransmission();
+}
+
+// ============================================================
+//  事件绑定
+// ============================================================
+document.getElementById('sl-n1').addEventListener('input', e => {
+  state.n1 = parseFloat(e.target.value);
+  updateAll();
+});
+document.getElementById('sl-n2').addEventListener('input', e => {
+  state.n2 = parseFloat(e.target.value);
+  updateAll();
+});
+document.getElementById('sl-theta').addEventListener('input', e => {
+  state.theta_i_deg = parseFloat(e.target.value);
+  state.sweeping = false;
+  document.getElementById('btn-sweep').classList.remove('active');
+  document.getElementById('btn-sweep').textContent = '自动扫描';
+  updateAll();
+});
+
+document.getElementById('sl-z1').addEventListener('input', e => {
+  state.z1 = parseFloat(e.target.value);
+  updateAll();
+});
+document.getElementById('sl-z2').addEventListener('input', e => {
+  state.z2 = parseFloat(e.target.value);
+  updateAll();
+});
+
+document.getElementById('btn-sweep').addEventListener('click', () => {
+  state.sweeping = !state.sweeping;
+  const btn = document.getElementById('btn-sweep');
+  if (state.sweeping) {
+    btn.classList.add('active');
+    btn.textContent = '暂停';
+    state.lastT = performance.now();
+    requestAnimationFrame(sweepLoop);
+  } else {
+    btn.classList.remove('active');
+    btn.textContent = '自动扫描';
+  }
+});
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  state.n1 = 1.50; state.n2 = 1.00; state.theta_i_deg = 30.0;
+  state.z1 = 1.00; state.z2 = 1.00;
+  state.sweeping = false;
+  document.getElementById('sl-n1').value = 1.50;
+  document.getElementById('sl-n2').value = 1.00;
+  document.getElementById('sl-z1').value = 1.00;
+  document.getElementById('sl-z2').value = 1.00;
+  document.getElementById('btn-sweep').classList.remove('active');
+  document.getElementById('btn-sweep').textContent = '自动扫描';
+  updateAll();
+});
+
+function sweepLoop(t) {
+  if (!state.sweeping) return;
+  const dt = (t - state.lastT) / 1000;
+  state.lastT = t;
+  // 速度: ~18 deg/s
+  state.theta_i_deg += state.sweepDir * 18 * dt;
+  if (state.theta_i_deg >= 89) { state.theta_i_deg = 89; state.sweepDir = -1; }
+  if (state.theta_i_deg <= 2)  { state.theta_i_deg = 2;  state.sweepDir = 1;  }
+  updateAll();
+  requestAnimationFrame(sweepLoop);
+}
+
+// 首次渲染
+updateAll();
+requestAnimationFrame(waveLoop);
+</script>
+</body>
+</html>
