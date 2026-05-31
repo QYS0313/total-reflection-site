@@ -384,6 +384,87 @@ canvas {
   .canvas-card h3 .tag { font-size: 0.54rem; }
 }
 
+
+/* ----- Mobile inline controls: sliders sit directly below the canvas ----- */
+.mobile-inline-controls {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .controls {
+    display: none;
+  }
+
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  .ray-card {
+    position: relative;
+  }
+
+  .ray-card canvas {
+    aspect-ratio: 600 / 380;
+    min-height: 0;
+    max-height: none;
+  }
+
+  .mobile-inline-controls {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid rgba(127, 255, 212, 0.18);
+    background: rgba(5, 13, 16, 0.72);
+  }
+
+  .mobile-control-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.72rem;
+    color: var(--cyan);
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed rgba(127, 255, 212, 0.18);
+  }
+
+  .mobile-ctrl {
+    margin-bottom: 9px;
+  }
+
+  .mobile-ctrl:last-child {
+    margin-bottom: 0;
+  }
+
+  .mobile-ctrl label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.78rem;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+
+  .mobile-ctrl label span {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--cyan-bright);
+    font-weight: 700;
+  }
+}
+
+@media (max-width: 430px) {
+  .mobile-inline-controls {
+    padding: 9px;
+  }
+
+  .mobile-control-title {
+    font-size: 0.68rem;
+  }
+
+  .mobile-ctrl label {
+    font-size: 0.74rem;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -484,14 +565,42 @@ canvas {
   <div class="panel canvas-card ray-card frame">
     <span class="c-tl"></span><span class="c-br"></span>
     <h3>光强可视化 · 全反射演示 <span class="tag">[total internal reflection]</span></h3>
+
     <canvas id="rayCanvas" width="600" height="380"></canvas>
+    <div class="mobile-inline-controls">
+      <div class="mobile-control-title">全反射参数</div>
+      <div class="mobile-ctrl">
+        <label>n₁ <span id="m-lab-n1">1.50</span></label>
+        <input type="range" id="m-sl-n1" min="1.00" max="2.50" step="0.01" value="1.50">
+      </div>
+      <div class="mobile-ctrl">
+        <label>n₂ <span id="m-lab-n2">1.00</span></label>
+        <input type="range" id="m-sl-n2" min="1.00" max="2.50" step="0.01" value="1.00">
+      </div>
+      <div class="mobile-ctrl">
+        <label>入射角 θᵢ <span id="m-lab-theta">30.0°</span></label>
+        <input type="range" class="gold" id="m-sl-theta" min="0" max="89.5" step="0.1" value="30.0">
+      </div>
+    </div>
   </div>
 
   <!-- ============ 波动可视化 (全透射演示) ============ -->
   <div class="panel canvas-card ray-card frame">
     <span class="c-tl"></span><span class="c-br"></span>
     <h3>波动可视化 · 全透射演示 <span class="tag">[波阻抗匹配 → Γ = 0]</span></h3>
+
     <canvas id="rayCanvasPol" width="600" height="380"></canvas>
+    <div class="mobile-inline-controls">
+      <div class="mobile-control-title">全透射参数</div>
+      <div class="mobile-ctrl">
+        <label>Z₁ <span id="m-lab-z1">1.00</span></label>
+        <input type="range" id="m-sl-z1" min="0.20" max="3.00" step="0.01" value="1.00">
+      </div>
+      <div class="mobile-ctrl">
+        <label>Z₂ <span id="m-lab-z2">1.00</span></label>
+        <input type="range" id="m-sl-z2" min="0.20" max="3.00" step="0.01" value="1.00">
+      </div>
+    </div>
   </div>
 </div>
 
@@ -938,6 +1047,20 @@ function updateAll() {
   document.getElementById('lab-z1').textContent = state.z1.toFixed(2);
   document.getElementById('lab-z2').textContent = state.z2.toFixed(2);
 
+  // 同步手机版画布下方的紧凑控制条
+  const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+  const setVal = (id, value) => { const el = document.getElementById(id); if (el) el.value = value; };
+  setText('m-lab-n1', state.n1.toFixed(2));
+  setText('m-lab-n2', state.n2.toFixed(2));
+  setText('m-lab-theta', state.theta_i_deg.toFixed(1) + '°');
+  setText('m-lab-z1', state.z1.toFixed(2));
+  setText('m-lab-z2', state.z2.toFixed(2));
+  setVal('m-sl-n1', state.n1);
+  setVal('m-sl-n2', state.n2);
+  setVal('m-sl-theta', state.theta_i_deg);
+  setVal('m-sl-z1', state.z1);
+  setVal('m-sl-z2', state.z2);
+
   const tc = criticalAngleDeg(state.n1, state.n2);
   const R_light = (f.Rs + f.Rp) / 2;
   const T_light = (f.Ts + f.Tp) / 2;
@@ -974,7 +1097,11 @@ function updateAll() {
   }
 
   // 同步滑块（自动扫描时也要更新）
+  document.getElementById('sl-n1').value = state.n1;
+  document.getElementById('sl-n2').value = state.n2;
   document.getElementById('sl-theta').value = state.theta_i_deg;
+  document.getElementById('sl-z1').value = state.z1;
+  document.getElementById('sl-z2').value = state.z2;
 
   drawRayDiagram();
   drawWaveTransmission();
@@ -1007,6 +1134,26 @@ document.getElementById('sl-z2').addEventListener('input', e => {
   state.z2 = parseFloat(e.target.value);
   updateAll();
 });
+
+// 手机版：画布下方紧凑滑块，调整时可以直接看到上方仿真图像
+function bindMobileSlider(id, key) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', e => {
+    state[key] = parseFloat(e.target.value);
+    if (key === 'theta_i_deg') {
+      state.sweeping = false;
+      document.getElementById('btn-sweep').classList.remove('active');
+      document.getElementById('btn-sweep').textContent = '自动扫描';
+    }
+    updateAll();
+  });
+}
+bindMobileSlider('m-sl-n1', 'n1');
+bindMobileSlider('m-sl-n2', 'n2');
+bindMobileSlider('m-sl-theta', 'theta_i_deg');
+bindMobileSlider('m-sl-z1', 'z1');
+bindMobileSlider('m-sl-z2', 'z2');
 
 document.getElementById('btn-sweep').addEventListener('click', () => {
   state.sweeping = !state.sweeping;
